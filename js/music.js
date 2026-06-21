@@ -8,19 +8,59 @@ export const PITCH_CLASS = {
 
 const SHARP_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
-// Chord qualities as semitone intervals from the root.
+// Chord/scale qualities as semitone intervals from the root.
+// Symbols use musical glyphs; "note" is a single tone (for scale exercises).
 export const QUALITIES = {
+  note: { intervals: [0], symbol: "" },
+
+  // triads
+  maj: { intervals: [0, 4, 7], symbol: "" },
+  min: { intervals: [0, 3, 7], symbol: "m" },
+  dim: { intervals: [0, 3, 6], symbol: "°" },
+  aug: { intervals: [0, 4, 8], symbol: "+" },
+  sus2: { intervals: [0, 2, 7], symbol: "sus2" },
+  sus4: { intervals: [0, 5, 7], symbol: "sus4" },
+
+  // sixths
+  6: { intervals: [0, 4, 7, 9], symbol: "6" },
+  m6: { intervals: [0, 3, 7, 9], symbol: "m6" },
+  69: { intervals: [0, 4, 9, 14], symbol: "6/9" },
+
+  // sevenths (the four families + relatives)
   maj7: { intervals: [0, 4, 7, 11], symbol: "maj7" },
   m7: { intervals: [0, 3, 7, 10], symbol: "m7" },
   7: { intervals: [0, 4, 7, 10], symbol: "7" },
   m7b5: { intervals: [0, 3, 6, 10], symbol: "m7♭5" },
   dim7: { intervals: [0, 3, 6, 9], symbol: "°7" },
-  maj: { intervals: [0, 4, 7], symbol: "" },
-  min: { intervals: [0, 3, 7], symbol: "m" },
-  // Jazz "shell" voicing: root, 3rd, 7th — the harmonic skeleton.
+  mMaj7: { intervals: [0, 3, 7, 11], symbol: "m(maj7)" },
+  "7sus4": { intervals: [0, 5, 7, 10], symbol: "7sus4" },
+
+  // ninths and extensions
+  maj9: { intervals: [0, 4, 7, 11, 14], symbol: "maj9" },
+  m9: { intervals: [0, 3, 7, 10, 14], symbol: "m9" },
+  9: { intervals: [0, 4, 7, 10, 14], symbol: "9" },
+  add9: { intervals: [0, 4, 7, 14], symbol: "add9" },
+  m11: { intervals: [0, 3, 10, 14, 17], symbol: "m11" },
+  13: { intervals: [0, 4, 10, 14, 21], symbol: "13" },
+  "9sus4": { intervals: [0, 5, 10, 14], symbol: "9sus4" },
+
+  // altered dominants
+  "7b9": { intervals: [0, 4, 10, 13], symbol: "7♭9" },
+  "7#9": { intervals: [0, 4, 10, 15], symbol: "7♯9" },
+  "7#11": { intervals: [0, 4, 10, 14, 18], symbol: "7♯11" },
+  "7b13": { intervals: [0, 4, 10, 20], symbol: "7♭13" },
+  "7#5": { intervals: [0, 4, 8, 10], symbol: "7♯5" },
+  "7alt": { intervals: [0, 4, 10, 15, 20], symbol: "7alt" },
+
+  // shell voicings (root, 3rd, 7th)
   "shell-maj7": { intervals: [0, 4, 11], symbol: "maj7" },
   "shell-m7": { intervals: [0, 3, 10], symbol: "m7" },
   "shell-7": { intervals: [0, 4, 10], symbol: "7" },
+
+  // rootless A voicings (left-hand comping)
+  "rootless-m9": { intervals: [3, 7, 10, 14], symbol: "m9" },
+  "rootless-13": { intervals: [10, 14, 16, 21], symbol: "13" },
+  "rootless-maj9": { intervals: [4, 7, 11, 14], symbol: "maj9" },
 };
 
 // Build the MIDI note numbers for a chord at a given octave (root octave).
@@ -41,9 +81,7 @@ export function chordSymbol(root, quality) {
 
 // MIDI number -> note name with octave, e.g. 60 -> "C4".
 export function noteName(midi) {
-  const name = SHARP_NAMES[midi % 12];
-  const octave = Math.floor(midi / 12) - 1;
-  return name + octave;
+  return SHARP_NAMES[midi % 12] + (Math.floor(midi / 12) - 1);
 }
 
 // Is this MIDI note a black key?

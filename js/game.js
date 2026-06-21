@@ -80,8 +80,11 @@ export class Game {
     this.events = [];
     this._coachKey = null;
     level.events.forEach((ev, i) => {
-      const [root, quality, octave] = ev.chord;
-      const midis = buildChord(root, quality, octave ?? 4);
+      const c = ev.chord;
+      const root = Array.isArray(c) ? c[0] : c.root;
+      const quality = Array.isArray(c) ? c[1] : c.quality;
+      const octave = (Array.isArray(c) ? c[2] : c.octave) ?? 4;
+      const midis = buildChord(root, quality, octave);
       const name = chordSymbol(root, quality);
       const target = COUNT_IN + LOOKAHEAD + ev.beat * beatMs;
       const refs = [];

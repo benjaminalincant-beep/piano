@@ -161,6 +161,20 @@ kbd { font-family: var(--font); background: var(--surface-2); border: 1px solid 
 .star { color: rgba(255, 255, 255, 0.16); font-style: normal; }
 .star.on { color: var(--gold); text-shadow: 0 0 12px rgba(246, 179, 82, 0.6); }
 
+/* ---------- lesson view ---------- */
+.lesson { max-width: 640px; margin: 0 auto; }
+.lesson-goal { font-size: 17px; color: var(--text); line-height: 1.6; margin-bottom: 22px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: 0 var(--r) var(--r) 0; }
+.lesson-theory p { color: var(--text-dim); line-height: 1.78; font-size: 16px; margin-bottom: 14px; }
+.keypoints { margin: 24px 0; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); }
+.keypoints-h { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+.keypoints ul { list-style: none; }
+.keypoints li { position: relative; padding-left: 24px; color: var(--text); font-size: 15px; line-height: 1.55; margin-bottom: 9px; }
+.keypoints li:last-child { margin-bottom: 0; }
+.keypoints li::before { content: "\266a"; position: absolute; left: 0; color: var(--gold); }
+.listen-btn { width: 100%; justify-content: center; margin-bottom: 20px; }
+.lesson-actions { display: flex; justify-content: center; padding-bottom: 10px; }
+.bar-title h2 { line-height: 1.15; }
+
 /* ---------- HUD ---------- */
 .hud { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
 .hud-level { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
