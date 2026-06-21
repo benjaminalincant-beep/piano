@@ -1,13 +1,21 @@
-// MIDI input: connects to a physical MIDI keyboard via the Web MIDI API and
+// MIDI input: connects to physical MIDI keyboards via the Web MIDI API and
 // normalizes everything (hardware, computer keyboard, on-screen clicks) into a
-// single stream of {type:'on'|'off', midi, velocity} events.
+// single stream of {type:'on'|'off', midi, velocity, source} events.
+//
+// Reliability choices:
+//  - We listen to EVERY connected input at once, so whichever port the user's
+//    piano is on (and however many devices are plugged in), notes are heard.
+//  - Notes are REFERENCE-COUNTED across sources: a note only emits 'off' once
+//    every source holding it has released, so a finger on the on-screen key and
+//    a held hardware key never cut each other short.
+//  - Hardware notes are tracked PER PORT, so unplugging one device releases only
+//    its own notes, never notes still held on another device.
 
 const NOTE_ON = 0x90;
 const NOTE_OFF = 0x80;
 
 // Computer-keyboard layout keyed by PHYSICAL e.code (independent of layout,
-// Shift and CapsLock). Home row = white keys from C4; covers C4..G5 so every
-// note the curriculum requires is reachable.
+// Shift and CapsLock). Home row = white keys from C4; covers C4..G5.
 const KEY_MAP = {
   KeyA: 60, KeyW: 61, KeyS: 62, KeyE: 63, KeyD: 64, KeyF: 65, KeyT: 66,
   KeyG: 67, KeyY: 68, KeyH: 69, KeyU: 70, KeyJ: 71, KeyK: 72, KeyO: 73,
@@ -18,11 +26,12 @@ export class MidiInput extends EventTarget {
   constructor() {
     super();
     this.access = null;
-    this.input = null;          // currently bound MIDIInput
-    this.inputs = [];           // available MIDIInputs
+    this.inputs = [];
+    this.bound = new Set();      // MIDIInputs we've attached a listener to
     this.computerKeyboard = true;
-    this._kbHeld = new Map();   // e.code -> emitted midi (computer keyboard)
-    this._hwHeld = new Set();   // midi numbers currently down on hardware
+    this._held = new Map();      // midi -> ref count across all sources (the gate)
+    this._kbHeld = new Map();    // e.code -> midi (computer keyboard)
+    this._hwPorts = new Map();   // MIDIInput -> Set<midi> currently held on that port
     this._boundMsg = (e) => this._onMidiMessage(e);
     this._installComputerKeyboard();
     this._installPanic();
@@ -32,16 +41,19 @@ export class MidiInput extends EventTarget {
     return typeof navigator !== "undefined" && !!navigator.requestMIDIAccess;
   }
 
+  get connected() { return this.inputs.length > 0; }
+
   // Ask the browser for MIDI access. Must be called from a user gesture.
   async connect() {
     if (!this.supported) {
-      this._status("unsupported", "Web MIDI not supported — use the computer keyboard.");
+      this._status("unsupported", "Web MIDI needs Chrome, Edge or a recent Safari — the computer keyboard works here too.");
       return false;
     }
+    this._status("connecting", "Connecting…");
     try {
       this.access = await navigator.requestMIDIAccess({ sysex: false });
     } catch (err) {
-      this._status("denied", "MIDI permission denied — using computer keyboard.");
+      this._status("denied", "MIDI permission was blocked — allow it, or play with the computer keyboard.");
       return false;
     }
     this.access.onstatechange = () => this._refreshInputs();
@@ -52,20 +64,27 @@ export class MidiInput extends EventTarget {
   _refreshInputs() {
     if (!this.access) return;
     this.inputs = [...this.access.inputs.values()];
-    // If the bound device vanished, release anything it was holding first.
-    if (this.input && !this.inputs.includes(this.input)) { this.panic(); this.input = null; }
-    if (!this.input && this.inputs.length) this.selectInput(this.inputs[0].id);
-    this.dispatchEvent(new CustomEvent("devices", { detail: this.inputs }));
-    if (!this.inputs.length) this._status("waiting", "No MIDI device found — plug one in or use the keyboard.");
-  }
-
-  selectInput(id) {
-    this.panic(); // release notes held on the previous device before switching
-    if (this.input) this.input.removeEventListener("midimessage", this._boundMsg);
-    this.input = this.inputs.find((i) => i.id === id) || null;
-    if (this.input) {
-      this.input.addEventListener("midimessage", this._boundMsg);
-      this._status("connected", `Connected: ${this.input.name}`);
+    // Attach to every input that isn't bound yet.
+    for (const inp of this.inputs) {
+      if (!this.bound.has(inp)) { inp.addEventListener("midimessage", this._boundMsg); this.bound.add(inp); }
+    }
+    // Detach a vanished device and release ONLY the notes it was holding.
+    for (const inp of [...this.bound]) {
+      if (!this.inputs.includes(inp)) {
+        inp.removeEventListener("midimessage", this._boundMsg);
+        this.bound.delete(inp);
+        const set = this._hwPorts.get(inp);
+        if (set) { for (const m of set) this._emitOff(m, "midi"); this._hwPorts.delete(inp); }
+      }
+    }
+    const names = this.inputs.map((i) => i.name);
+    this.dispatchEvent(new CustomEvent("devices", { detail: names }));
+    if (names.length) {
+      this._status("connected", names.length === 1
+        ? `Connected: ${names[0]} — play a note!`
+        : `Connected: ${names.length} devices — play a note!`);
+    } else {
+      this._status("waiting", "Listening… switch on or pair your MIDI piano.");
     }
   }
 
@@ -73,11 +92,14 @@ export class MidiInput extends EventTarget {
     const [status, note, velocity] = e.data;
     const command = status & 0xf0;
     if (command === NOTE_ON && velocity > 0) {
-      this._hwHeld.add(note);
-      this._emit("on", note, velocity / 127);
+      let set = this._hwPorts.get(e.target);
+      if (!set) { set = new Set(); this._hwPorts.set(e.target, set); }
+      if (set.has(note)) return;          // ignore duplicate note-on from same port
+      set.add(note);
+      this._emitOn(note, velocity / 127, "midi");
     } else if (command === NOTE_OFF || (command === NOTE_ON && velocity === 0)) {
-      this._hwHeld.delete(note);
-      this._emit("off", note, 0);
+      const set = this._hwPorts.get(e.target);
+      if (set && set.delete(note)) this._emitOff(note, "midi");
     }
   }
 
@@ -89,18 +111,18 @@ export class MidiInput extends EventTarget {
       const midi = KEY_MAP[e.code];
       if (midi === undefined || this._kbHeld.has(e.code)) return;
       this._kbHeld.set(e.code, midi);
-      this._emit("on", midi, 0.8);
+      this._emitOn(midi, 0.8, "kb");
     });
     window.addEventListener("keyup", (e) => {
       const midi = this._kbHeld.get(e.code);
       if (midi === undefined) return;
       this._kbHeld.delete(e.code);
-      this._emit("off", midi, 0);
+      this._emitOff(midi, "kb");
     });
   }
 
-  // Release every held note when focus is lost, so a key-up delivered to
-  // another window can never leave a note (or its highlight) stuck on.
+  // Release everything when focus is lost, so a key-up delivered to another
+  // window can never leave a note (or its highlight) stuck on.
   _installPanic() {
     window.addEventListener("blur", () => this.panic());
     document.addEventListener("visibilitychange", () => {
@@ -109,18 +131,33 @@ export class MidiInput extends EventTarget {
   }
 
   panic() {
-    for (const midi of this._kbHeld.values()) this._emit("off", midi, 0);
-    for (const midi of this._hwHeld) this._emit("off", midi, 0);
+    for (const midi of this._held.keys()) this._dispatch("off", midi, 0, "panic");
+    this._held.clear();
     this._kbHeld.clear();
-    this._hwHeld.clear();
+    this._hwPorts.clear();
   }
 
-  // Used by the on-screen keyboard UI to inject notes.
-  play(midi, velocity = 0.8) { this._emit("on", midi, velocity); }
-  release(midi) { this._emit("off", midi, 0); }
+  // Used by the on-screen keyboards (game + home mini piano).
+  play(midi, velocity = 0.85) { this._emitOn(midi, velocity, "screen"); }
+  release(midi) { this._emitOff(midi, "screen"); }
 
-  _emit(type, midi, velocity) {
-    this.dispatchEvent(new CustomEvent("note", { detail: { type, midi, velocity } }));
+  // --- reference-counting gate: emit a single on/off per pitch regardless of
+  //     how many sources are holding it ----------------------------------------
+  _emitOn(midi, velocity, source) {
+    const c = this._held.get(midi) || 0;
+    this._held.set(midi, c + 1);
+    if (c === 0) this._dispatch("on", midi, velocity, source);
+  }
+
+  _emitOff(midi, source) {
+    const c = this._held.get(midi) || 0;
+    if (c <= 0) return;
+    if (c === 1) { this._held.delete(midi); this._dispatch("off", midi, 0, source); }
+    else this._held.set(midi, c - 1);
+  }
+
+  _dispatch(type, midi, velocity, source) {
+    this.dispatchEvent(new CustomEvent("note", { detail: { type, midi, velocity, source } }));
   }
 
   _status(state, message) {

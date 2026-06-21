@@ -4,8 +4,8 @@
 import { MidiInput } from "./midi.js";
 import { Synth } from "./audio.js";
 import { Game } from "./game.js";
+import { MiniKeyboard } from "./keyboard.js";
 import { WORLDS, LEVELS } from "./levels.js";
-import { chordSymbol } from "./music.js";
 
 const input = new MidiInput();
 const synth = new Synth();
@@ -41,26 +41,6 @@ input.addEventListener("status", (e) => {
   $("#midi-status").textContent = message;
   $("#status-dot").dataset.state = state;
 });
-input.addEventListener("devices", (e) => {
-  const sel = $("#midi-device");
-  const devices = e.detail;
-  sel.innerHTML = "";
-  if (!devices.length) {
-    const o = document.createElement("option");
-    o.textContent = "No devices";
-    sel.appendChild(o);
-  } else {
-    for (const d of devices) {
-      const o = document.createElement("option"); // textContent/value escape device strings
-      o.value = d.id;
-      o.textContent = d.name;
-      sel.appendChild(o);
-    }
-  }
-  sel.disabled = !devices.length;
-});
-$("#midi-device").addEventListener("change", (e) => input.selectInput(e.target.value));
-
 $("#btn-connect").addEventListener("click", async () => {
   await synth.resume();
   await input.connect();
@@ -121,6 +101,10 @@ function startLevel(id) {
     synth,
     onUpdate: updateHud,
     onProgress: (p) => { $("#song-progress").style.width = (p * 100).toFixed(1) + "%"; },
+    onChord: (next) => {
+      $("#coach-chord").textContent = next ? next.name : "—";
+      $("#coach-notes").textContent = next ? next.notes.join(" ") : "";
+    },
     onEnd: showResults,
   });
   game.load(level);
@@ -264,4 +248,19 @@ if (!input.supported) {
   $("#midi-status").textContent = "Connect your MIDI piano, or just play with the keyboard.";
   $("#status-dot").dataset.state = "idle";
 }
+
+// Home mini-piano: a live test that lights up the moment a note is played.
+new MiniKeyboard(document.getElementById("mini-piano"), input, synth, { low: 60, high: 84 });
+
+// Resume audio on the first played note, and confirm when real MIDI is heard.
+let heardMidi = false;
+input.addEventListener("note", (e) => {
+  if (e.detail.type === "on" && synth.resume) synth.resume();
+  if (!heardMidi && e.detail.source === "midi" && e.detail.type === "on") {
+    heardMidi = true;
+    $("#midi-status").textContent = "✓ I can hear your piano — you're all set!";
+    $("#status-dot").dataset.state = "connected";
+  }
+});
+
 show("home");

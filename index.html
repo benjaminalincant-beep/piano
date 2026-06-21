@@ -38,12 +38,13 @@
             <span class="status-dot" id="status-dot" data-state="idle"></span>
             <p id="midi-status" class="midi-status">Loading…</p>
           </div>
-          <div class="connect-actions">
-            <button id="btn-connect" class="btn primary">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M9 2v6m6-6v6M5 8h14v3a7 7 0 0 1-14 0V8zm7 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Connect MIDI
-            </button>
-            <select id="midi-device" disabled aria-label="MIDI device"><option>No devices</option></select>
+          <button id="btn-connect" class="btn primary">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M9 2v6m6-6v6M5 8h14v3a7 7 0 0 1-14 0V8zm7 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Connect MIDI
+          </button>
+          <div class="mini-piano-wrap">
+            <p class="mini-hint">Play a note — your keys light up here.</p>
+            <div id="mini-piano" class="mini-piano" role="group" aria-label="Test keyboard"></div>
           </div>
         </div>
 
@@ -98,6 +99,11 @@
           <div class="stat"><span class="label">Accuracy</span><span id="hud-acc">100%</span></div>
         </div>
       </header>
+      <div class="coach" aria-live="polite">
+        <span class="coach-tag">Next</span>
+        <span id="coach-chord" class="coach-chord">—</span>
+        <span id="coach-notes" class="coach-notes"></span>
+      </div>
       <div class="progress"><div id="song-progress" class="progress-fill"></div></div>
       <div class="stage">
         <canvas id="game-canvas"></canvas>

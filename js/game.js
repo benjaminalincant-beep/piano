@@ -4,7 +4,7 @@
 
 import { chord as buildChord, chordSymbol, isBlackKey } from "./music.js";
 
-const LOOKAHEAD = 2000;   // ms a note is visible while falling
+const LOOKAHEAD = 2800;   // ms a note is visible while falling (slower = learnable)
 const COUNT_IN = 700;     // ms pause before the first note lands
 const PERFECT = 70, GREAT = 130, GOOD = 200; // hit windows in ms
 const KB_HEIGHT = 116;    // keyboard height in px
@@ -29,14 +29,16 @@ const COLORS = {
 };
 
 export class Game {
-  constructor({ canvas, input, synth, onUpdate, onProgress, onEnd }) {
+  constructor({ canvas, input, synth, onUpdate, onProgress, onChord, onEnd }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.input = input;
     this.synth = synth;
     this.onUpdate = onUpdate || (() => {});
     this.onProgress = onProgress || (() => {});
+    this.onChord = onChord || (() => {});
     this.onEnd = onEnd || (() => {});
+    this._coachKey = null;
 
     this.level = null;
     this.notes = [];          // {midi, target, eventIndex, judged, judgment}
@@ -76,18 +78,22 @@ export class Game {
 
     this.notes = [];
     this.events = [];
+    this._coachKey = null;
     level.events.forEach((ev, i) => {
       const [root, quality, octave] = ev.chord;
       const midis = buildChord(root, quality, octave ?? 4);
+      const name = chordSymbol(root, quality);
       const target = COUNT_IN + LOOKAHEAD + ev.beat * beatMs;
       const refs = [];
       for (const midi of midis) {
-        const note = { midi, target, eventIndex: i, judged: false, judgment: null, label: chordSymbol(root, quality) };
+        const note = { midi, target, eventIndex: i, judged: false, judgment: null, label: name };
         this.notes.push(note);
         refs.push(note);
       }
-      this.events.push({ target, notes: refs, resolved: false });
+      this.events.push({ target, notes: refs, resolved: false, name, midis });
     });
+    // Show the first chord on the coach during the count-in.
+    this._emitCoach();
     this.stats.total = this.notes.length;
     this.lastTarget = this.events.length ? this.events[this.events.length - 1].target : 0;
 
@@ -234,11 +240,21 @@ export class Game {
     });
   }
 
+  // Tell the UI which chord is coming up next (changes only when it advances).
+  _emitCoach() {
+    const next = this.events.find((ev) => !ev.resolved);
+    const key = next ? next.target : -1;
+    if (key === this._coachKey) return;
+    this._coachKey = key;
+    this.onChord(next ? { name: next.name, notes: next.midis.map((m) => NOTE_LETTERS[m % 12]) } : null);
+  }
+
   // ---- main loop ---------------------------------------------------------
   _loop() {
     if (!this.running) return;
     const now = this.gameTime;
     this.onProgress(Math.max(0, Math.min(1, now / (this.lastTarget + GOOD + 600))));
+    this._emitCoach();
 
     // Resolve misses and life loss per event once its window has passed.
     for (const ev of this.events) {
@@ -327,16 +343,22 @@ export class Game {
       if (!n.judged && Math.abs(now - n.target) <= GOOD) upcomingActive.add(n.midi);
     }
 
-    this._drawKeyboard(upcomingActive);
+    // ghost: softly light where the fingers go for the next chord, ahead of time
+    const ghost = new Set();
+    const nextEv = this.events.find((ev) => !ev.resolved);
+    if (nextEv) for (const gn of nextEv.notes) if (!gn.judged) ghost.add(gn.midi);
+
+    this._drawKeyboard(upcomingActive, ghost);
   }
 
-  _drawKeyboard(upcoming) {
+  _drawKeyboard(upcoming, ghost) {
     const ctx = this.ctx;
     const top = this.rollH;
     // white keys
     for (const [midi, k] of this.layout) {
       if (k.black) continue;
       const on = this.activeKeys.has(midi) || upcoming.has(midi);
+      const isGhost = !on && ghost && ghost.has(midi);
       if (on) {
         ctx.save();
         ctx.shadowColor = COLORS.activeKey; ctx.shadowBlur = 18;
@@ -346,6 +368,12 @@ export class Game {
       } else {
         ctx.fillStyle = this._whiteGrad || COLORS.whiteKey;
         ctx.fillRect(k.x + 0.5, top, k.w - 1, KB_HEIGHT);
+        if (isGhost) {
+          ctx.fillStyle = "rgba(246,179,82,0.22)";
+          ctx.fillRect(k.x + 0.5, top, k.w - 1, KB_HEIGHT);
+          ctx.fillStyle = COLORS.activeKey;
+          ctx.fillRect(k.x + 0.5, top, k.w - 1, 4); // gold cue bar
+        }
       }
       ctx.strokeStyle = "rgba(0,0,0,0.28)";
       ctx.lineWidth = 1;
@@ -361,6 +389,7 @@ export class Game {
     for (const [midi, k] of this.layout) {
       if (!k.black) continue;
       const on = this.activeKeys.has(midi) || upcoming.has(midi);
+      const isGhost = !on && ghost && ghost.has(midi);
       const h = KB_HEIGHT * 0.62;
       if (on) {
         ctx.save();
@@ -369,7 +398,7 @@ export class Game {
         ctx.fillRect(k.x, top, k.w, h);
         ctx.restore();
       } else {
-        ctx.fillStyle = COLORS.blackKey;
+        ctx.fillStyle = isGhost ? "rgba(246,179,82,0.6)" : COLORS.blackKey;
         ctx.fillRect(k.x, top, k.w, h);
       }
     }
