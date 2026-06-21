@@ -75,6 +75,7 @@ export class Game {
     this.running = false;
     this.stats = { score: 0, combo: 0, maxCombo: 0, lives: level.lives, hits: 0, total: 0 };
     const beatMs = 60000 / level.bpm;
+    this.lookahead = level.lookahead ?? LOOKAHEAD; // lower = notes fall faster = harder
 
     this.notes = [];
     this.events = [];
@@ -86,7 +87,7 @@ export class Game {
       const octave = (Array.isArray(c) ? c[2] : c.octave) ?? 4;
       const midis = buildChord(root, quality, octave);
       const name = chordSymbol(root, quality);
-      const target = COUNT_IN + LOOKAHEAD + ev.beat * beatMs;
+      const target = COUNT_IN + this.lookahead + ev.beat * beatMs;
       const refs = [];
       for (const midi of midis) {
         const note = { midi, target, eventIndex: i, judged: false, judgment: null, label: name };
@@ -320,7 +321,7 @@ export class Game {
     for (const n of this.notes) {
       const key = this.layout.get(n.midi);
       if (!key) continue;
-      const progress = (now - (n.target - LOOKAHEAD)) / LOOKAHEAD;
+      const progress = (now - (n.target - this.lookahead)) / this.lookahead;
       if (progress < 0 || progress > 1.15) continue;
       const y = progress * this.rollH;
       const h = 24;

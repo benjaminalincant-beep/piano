@@ -30,7 +30,8 @@ export class MidiInput extends EventTarget {
     this.bound = new Set();      // MIDIInputs we've attached a listener to
     this.computerKeyboard = true;
     this._held = new Map();      // midi -> ref count across all sources (the gate)
-    this._kbHeld = new Map();    // e.code -> midi (computer keyboard)
+    this._kbHeld = new Map();    // e.code -> emitted midi (computer keyboard)
+    this._octShift = 0;          // computer-keyboard octave offset (z / x)
     this._hwPorts = new Map();   // MIDIInput -> Set<midi> currently held on that port
     this._boundMsg = (e) => this._onMidiMessage(e);
     this._installComputerKeyboard();
@@ -108,8 +109,13 @@ export class MidiInput extends EventTarget {
       if (!this.computerKeyboard || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
       const tag = (e.target && e.target.tagName) || "";
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-      const midi = KEY_MAP[e.code];
-      if (midi === undefined || this._kbHeld.has(e.code)) return;
+      if (e.code === "KeyZ" || e.code === "KeyX") { // shift the playable octave
+        this._octShift = Math.max(-24, Math.min(36, this._octShift + (e.code === "KeyX" ? 12 : -12)));
+        return;
+      }
+      const base = KEY_MAP[e.code];
+      if (base === undefined || this._kbHeld.has(e.code)) return;
+      const midi = base + this._octShift;
       this._kbHeld.set(e.code, midi);
       this._emitOn(midi, 0.8, "kb");
     });

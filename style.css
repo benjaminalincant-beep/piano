@@ -175,6 +175,21 @@ kbd { font-family: var(--font); background: var(--surface-2); border: 1px solid 
 .lesson-actions { display: flex; justify-content: center; padding-bottom: 10px; }
 .bar-title h2 { line-height: 1.15; }
 
+/* ---------- dual CTA + difficulty tiers ---------- */
+.cta-row { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.btn.big-ghost { font-size: 16px; padding: 15px 24px; background: var(--surface-2); border-color: var(--border-2); }
+.tier-pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 11px; border-radius: 999px; }
+.tier-pill.tier-1, .world-num.tier-1 { color: #34d8b4; }
+.tier-pill.tier-2, .world-num.tier-2 { color: #7cc14f; }
+.tier-pill.tier-3, .world-num.tier-3 { color: #f6b352; }
+.tier-pill.tier-4, .world-num.tier-4 { color: #ef6f5e; }
+.tier-pill.tier-5, .world-num.tier-5 { color: #a99bf5; }
+.tier-pill.tier-1 { background: rgba(52, 216, 180, 0.15); }
+.tier-pill.tier-2 { background: rgba(124, 193, 79, 0.16); }
+.tier-pill.tier-3 { background: rgba(246, 179, 82, 0.16); }
+.tier-pill.tier-4 { background: rgba(239, 111, 94, 0.16); }
+.tier-pill.tier-5 { background: rgba(142, 123, 242, 0.18); }
+
 /* ---------- HUD ---------- */
 .hud { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
 .hud-level { font-family: var(--font-display); font-size: 16px; font-weight: 600; }

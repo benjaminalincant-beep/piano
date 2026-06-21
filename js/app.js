@@ -1,21 +1,27 @@
-// App shell: screen navigation, MIDI, the course (units -> lesson cards ->
-// theory -> practice level), results, and localStorage star persistence.
+// App shell: navigation, MIDI, the course (units -> lessons -> theory -> practice),
+// the song library (tunes by difficulty tier), results and star persistence.
 
 import { MidiInput } from "./midi.js";
 import { Synth } from "./audio.js";
 import { Game } from "./game.js";
 import { MiniKeyboard } from "./keyboard.js";
 import { UNITS, LESSONS, LEVELS } from "./course.js";
+import { SONGS, TIER_NAMES } from "./songs.js";
 import { chord as buildChord } from "./music.js";
 
 const input = new MidiInput();
 const synth = new Synth();
 let game = null;
-let currentLessonId = null;
+let currentMode = "lesson";   // "lesson" | "song"
+let currentId = null;
+let currentLevel = null;
 
-// Flat lesson order, for "next lesson".
 const ORDER = [];
 for (const u of UNITS) for (const ls of u.lessons) ORDER.push(ls.id);
+
+const SONG_MAP = {};
+const SONG_ORDER = [];
+for (const s of SONGS) { SONG_MAP[s.id] = s; SONG_ORDER.push(s.id); }
 
 const STORE_KEY = "jazzkeys.stars";
 const loadStars = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; } };
@@ -25,7 +31,7 @@ const saveStar = (id, stars) => {
 };
 
 const $ = (sel) => document.querySelector(sel);
-const screens = ["home", "levels", "lesson", "game", "results"];
+const screens = ["home", "levels", "lesson", "songs", "game", "results"];
 function show(name) {
   for (const s of screens) $("#screen-" + s).classList.toggle("active", s === name);
   const active = $("#screen-" + name);
@@ -41,15 +47,10 @@ function starRow(filled, total = 3) {
 
 // ---- MIDI status -----------------------------------------------------------
 input.addEventListener("status", (e) => {
-  const { state, message } = e.detail;
-  $("#midi-status").textContent = message;
-  $("#status-dot").dataset.state = state;
+  $("#midi-status").textContent = e.detail.message;
+  $("#status-dot").dataset.state = e.detail.state;
 });
-
-$("#btn-connect").addEventListener("click", async () => {
-  await synth.resume();
-  await input.connect();
-});
+$("#btn-connect").addEventListener("click", async () => { await synth.resume(); await input.connect(); });
 
 // ---- course map ------------------------------------------------------------
 function renderCourse() {
@@ -65,15 +66,11 @@ function renderCourse() {
     grid.className = "level-grid";
     unit.lessons.forEach((ls, i) => {
       const earned = stars[ls.id] || 0;
-      earnedTotal += earned;
-      maxTotal += 3;
+      earnedTotal += earned; maxTotal += 3;
       const card = document.createElement("button");
       card.className = "level-card";
       card.innerHTML = `
-        <div class="level-top">
-          <span class="level-num">${i + 1}</span>
-          <span class="stars" aria-label="${earned} of 3 stars">${starRow(earned)}</span>
-        </div>
+        <div class="level-top"><span class="level-num">${i + 1}</span><span class="stars" aria-label="${earned} of 3 stars">${starRow(earned)}</span></div>
         <span class="level-name">${ls.title}</span>
         <span class="level-blurb">${ls.goal}</span>`;
       card.addEventListener("click", () => openLesson(ls.id));
@@ -85,9 +82,41 @@ function renderCourse() {
   $("#total-stars").textContent = `★ ${earnedTotal} / ${maxTotal} stars · ${ORDER.length} lessons`;
 }
 
+// ---- song library ----------------------------------------------------------
+function renderSongs() {
+  const stars = loadStars();
+  const root = $("#songs-list");
+  root.innerHTML = "";
+  const tiers = [1, 2, 3, 4, 5];
+  for (const t of tiers) {
+    const list = SONGS.filter((s) => s.tier === t);
+    if (!list.length) continue;
+    const section = document.createElement("section");
+    section.className = "world";
+    section.innerHTML = `<div class="world-head"><span class="world-num tier-${t}">Tier ${t}</span><h3>${TIER_NAMES[t]}</h3></div><p class="blurb">${list.length} tunes · ${["", "gentle melodies", "folk & easy melodies", "classical & carols with jazz chords", "ragtime & comping, faster", "virtuoso, reharmonized, fast"][t]}</p>`;
+    const grid = document.createElement("div");
+    grid.className = "level-grid";
+    for (const s of list) {
+      const earned = stars[s.id] || 0;
+      const card = document.createElement("button");
+      card.className = "level-card";
+      card.innerHTML = `
+        <div class="level-top"><span class="tier-pill tier-${t}">${TIER_NAMES[t]}</span><span class="stars" aria-label="${earned} of 3 stars">${starRow(earned)}</span></div>
+        <span class="level-name">${s.title}</span>
+        <span class="level-blurb">${s.origin} · ${s.bpm} bpm</span>`;
+      card.addEventListener("click", () => startSong(s.id));
+      grid.appendChild(card);
+    }
+    section.appendChild(grid);
+    root.appendChild(section);
+  }
+  const done = SONGS.filter((s) => (stars[s.id] || 0) > 0).length;
+  $("#songs-sub").textContent = SONGS.length ? `${SONGS.length} tunes · ${done} played` : "Songs are loading…";
+}
+
 // ---- lesson view -----------------------------------------------------------
 function openLesson(id) {
-  currentLessonId = id;
+  currentMode = "lesson"; currentId = id;
   const ls = LESSONS[id];
   $("#lesson-unit").textContent = `Unit ${ls.unitNum} · ${ls.unitName}`;
   $("#lesson-title").textContent = ls.title;
@@ -111,29 +140,37 @@ function playExample(chords) {
   }
 }
 $("#btn-listen").addEventListener("click", () => {
-  const ls = LESSONS[currentLessonId];
+  const ls = LESSONS[currentId];
   if (ls && ls.example) playExample(ls.example.chords);
 });
-$("#btn-practice").addEventListener("click", () => startLevel(currentLessonId));
+$("#btn-practice").addEventListener("click", () => startLesson(currentId));
 
+// ---- navigation ------------------------------------------------------------
 $("#btn-play").addEventListener("click", () => { renderCourse(); show("levels"); });
+$("#btn-songs").addEventListener("click", () => { renderSongs(); show("songs"); });
 $("#btn-back-home").addEventListener("click", () => show("home"));
 $("#btn-lesson-back").addEventListener("click", () => { renderCourse(); show("levels"); });
+$("#btn-songs-back").addEventListener("click", () => show("home"));
 
 // ---- gameplay --------------------------------------------------------------
-function startLevel(id) {
-  clearCountIn();
-  currentLessonId = id;
-  const level = LEVELS[id];
-  show("game");
-  $("#hud-level").textContent = `${LESSONS[id].unitName} · ${level.name}`;
-  resetHud(level);
+function startLesson(id) {
+  currentMode = "lesson"; currentId = id; currentLevel = LEVELS[id];
+  launch(`${LESSONS[id].unitName} · ${currentLevel.name}`);
+}
+function startSong(id) {
+  currentMode = "song"; currentId = id; currentLevel = SONG_MAP[id];
+  launch(`${TIER_NAMES[currentLevel.tier]} · ${currentLevel.title}`);
+}
 
+function launch(hudName) {
+  clearCountIn();
+  show("game");
+  $("#hud-level").textContent = hudName;
+  resetHud(currentLevel);
   if (game) game.destroy();
-  const canvas = $("#game-canvas");
   $("#song-progress").style.width = "0%";
   game = new Game({
-    canvas, input, synth,
+    canvas: $("#game-canvas"), input, synth,
     onUpdate: updateHud,
     onProgress: (p) => { $("#song-progress").style.width = (p * 100).toFixed(1) + "%"; },
     onChord: (next) => {
@@ -142,7 +179,7 @@ function startLevel(id) {
     },
     onEnd: showResults,
   });
-  game.load(level);
+  game.load(currentLevel);
   synth.resume();
   countInThenStart();
 }
@@ -171,7 +208,7 @@ function updateHud(s) {
   comboEl.textContent = s.combo + "×";
   comboEl.classList.toggle("hot", s.combo >= 8);
   $("#hud-acc").textContent = Math.round(s.accuracy * 100) + "%";
-  renderLives(s.lives, LEVELS[currentLessonId].lives);
+  renderLives(s.lives, currentLevel.lives);
   if (s.lastJudgment) flashJudgment(s.lastJudgment);
 }
 
@@ -186,9 +223,7 @@ function flashJudgment(j) {
 }
 
 let countInTimer = null;
-function clearCountIn() {
-  if (countInTimer) { clearTimeout(countInTimer); countInTimer = null; }
-}
+function clearCountIn() { if (countInTimer) { clearTimeout(countInTimer); countInTimer = null; } }
 
 function countInThenStart() {
   const el = $("#countdown");
@@ -213,27 +248,29 @@ function countInThenStart() {
   countInTimer = setTimeout(tick, 600);
 }
 
+function retry() { currentMode === "song" ? startSong(currentId) : startLesson(currentId); }
+
 $("#btn-pause").addEventListener("click", () => {
   if (!game) return;
   if (game.running) { game.pause(); $("#btn-pause").textContent = "Resume"; }
   else if (!game.finished) { game.resume(); $("#btn-pause").textContent = "Pause"; }
 });
-$("#btn-restart").addEventListener("click", () => startLevel(currentLessonId));
+$("#btn-restart").addEventListener("click", retry);
 $("#btn-quit").addEventListener("click", () => {
   clearCountIn();
   if (game) game.destroy();
   game = null;
-  renderCourse();
-  show("levels");
+  if (currentMode === "song") { renderSongs(); show("songs"); }
+  else { renderCourse(); show("levels"); }
 });
 
 // ---- results ---------------------------------------------------------------
-const RESULT_TITLES = { 3: "Flawless!", 2: "Great playing!", 1: "Lesson cleared", 0: "Keep practicing" };
+const RESULT_TITLES = { 3: "Flawless!", 2: "Great playing!", 1: "Cleared!", 0: "Keep practicing" };
 
 function showResults(r) {
-  saveStar(currentLessonId, r.stars);
+  saveStar(currentId, r.stars);
   show("results");
-  $("#result-eyebrow").textContent = r.completed ? "Lesson complete" : "Out of lives";
+  $("#result-eyebrow").textContent = r.completed ? (currentMode === "song" ? "Song complete" : "Lesson complete") : "Out of lives";
   $("#result-title").textContent = r.completed ? RESULT_TITLES[r.stars] : "So close — try again";
   const starsEl = $("#result-stars");
   starsEl.innerHTML = starRow(r.stars);
@@ -243,12 +280,21 @@ function showResults(r) {
   $("#result-combo").textContent = r.maxCombo + "×";
   $("#result-notes").textContent = `${r.hits}/${r.total}`;
 
-  const idx = ORDER.indexOf(currentLessonId);
-  const nextId = ORDER[idx + 1];
   const nextBtn = $("#btn-next");
-  if (nextId && r.stars > 0) { nextBtn.style.display = ""; nextBtn.onclick = () => openLesson(nextId); }
-  else nextBtn.style.display = "none";
-
+  const backBtn = $("#btn-results-levels");
+  if (currentMode === "song") {
+    const nextId = SONG_ORDER[SONG_ORDER.indexOf(currentId) + 1];
+    if (nextId && r.stars > 0) { nextBtn.style.display = ""; nextBtn.onclick = () => startSong(nextId); }
+    else nextBtn.style.display = "none";
+    backBtn.textContent = "All songs";
+    backBtn.onclick = () => { renderSongs(); show("songs"); };
+  } else {
+    const nextId = ORDER[ORDER.indexOf(currentId) + 1];
+    if (nextId && r.stars > 0) { nextBtn.style.display = ""; nextBtn.onclick = () => openLesson(nextId); }
+    else nextBtn.style.display = "none";
+    backBtn.textContent = "All lessons";
+    backBtn.onclick = () => { renderCourse(); show("levels"); };
+  }
   if (r.stars > 0) confetti(r.stars === 3 ? 120 : 60);
 }
 
@@ -262,17 +308,13 @@ function confetti(count) {
     document.body.appendChild(el);
     const dx = (Math.random() - 0.5) * 220;
     const anim = el.animate(
-      [
-        { transform: "translate(0, -10px) rotate(0deg)", opacity: 1 },
-        { transform: `translate(${dx}px, 102vh) rotate(${720 + Math.random() * 540}deg)`, opacity: 1 },
-      ],
+      [{ transform: "translate(0,-10px) rotate(0)", opacity: 1 }, { transform: `translate(${dx}px,102vh) rotate(${720 + Math.random() * 540}deg)`, opacity: 1 }],
       { duration: 1900 + Math.random() * 1400, easing: "cubic-bezier(0.2,0.6,0.4,1)", delay: Math.random() * 280 }
     );
     anim.onfinish = () => el.remove();
   }
 }
-$("#btn-retry").addEventListener("click", () => startLevel(currentLessonId));
-$("#btn-results-levels").addEventListener("click", () => { renderCourse(); show("levels"); });
+$("#btn-retry").addEventListener("click", retry);
 
 // ---- boot ------------------------------------------------------------------
 if (!input.supported) {
@@ -283,7 +325,7 @@ if (!input.supported) {
   $("#status-dot").dataset.state = "idle";
 }
 
-new MiniKeyboard(document.getElementById("mini-piano"), input, synth, { low: 60, high: 84 });
+new MiniKeyboard(document.getElementById("mini-piano"), input, synth, { low: 36, high: 84 });
 
 let heardMidi = false;
 input.addEventListener("note", (e) => {

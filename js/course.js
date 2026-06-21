@@ -1,5 +1,5 @@
 // Auto-generated jazz piano curriculum: units -> lessons -> practice levels.
-// Each lesson has theory + a playable falling-note practice level.
+// Each lesson has theory + a concise, targeted practice level.
 export const UNITS = [
   {
     "id": "u1",
@@ -55,23 +55,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 5
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
+              "beat": 2,
               "chord": {
                 "root": "D",
                 "quality": "note",
@@ -79,7 +63,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 16,
+              "beat": 4,
               "chord": {
                 "root": "E",
                 "quality": "note",
@@ -87,7 +71,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 20,
+              "beat": 6,
               "chord": {
                 "root": "F",
                 "quality": "note",
@@ -95,17 +79,9 @@ export const UNITS = [
               }
             },
             {
-              "beat": 24,
+              "beat": 8,
               "chord": {
                 "root": "G",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 28,
-              "chord": {
-                "root": "C",
                 "quality": "note",
                 "octave": 4
               }
@@ -220,38 +196,6 @@ export const UNITS = [
                 "quality": "note",
                 "octave": 5
               }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "B",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "A",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 20,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 22,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 4
-              }
             }
           ]
         }
@@ -358,38 +302,6 @@ export const UNITS = [
                 "quality": "note",
                 "octave": 4
               }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "F#",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "E",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 20,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 22,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 3
-              }
             }
           ]
         }
@@ -460,73 +372,9 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "E",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "F",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "A",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
                 "root": "C",
                 "quality": "note",
                 "octave": 5
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "A",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "B",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 20,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 5
-              }
-            },
-            {
-              "beat": 22,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 4
               }
             }
           ]
@@ -607,70 +455,6 @@ export const UNITS = [
                 "quality": "note",
                 "octave": 4
               }
-            },
-            {
-              "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 5,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "E",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 7,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 9,
-              "chord": {
-                "root": "E",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 11,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 4
-              }
             }
           ]
         }
@@ -719,7 +503,7 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 56,
+          "bpm": 60,
           "lives": 5,
           "key": "C",
           "events": [
@@ -749,38 +533,6 @@ export const UNITS = [
             },
             {
               "beat": 6,
-              "chord": {
-                "root": "C",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "F",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "C",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "G",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
               "chord": {
                 "root": "C",
                 "quality": "maj",
@@ -826,7 +578,7 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 56,
+          "bpm": 60,
           "lives": 5,
           "key": "C",
           "events": [
@@ -856,38 +608,6 @@ export const UNITS = [
             },
             {
               "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "min",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "E",
-                "quality": "min",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "A",
-                "quality": "min",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "E",
-                "quality": "min",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
               "chord": {
                 "root": "D",
                 "quality": "min",
@@ -928,7 +648,7 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 56,
+          "bpm": 58,
           "lives": 5,
           "key": "C",
           "events": [
@@ -958,38 +678,6 @@ export const UNITS = [
             },
             {
               "beat": 6,
-              "chord": {
-                "root": "F",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "B",
-                "quality": "dim",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "C",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "aug",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
               "chord": {
                 "root": "F",
                 "quality": "maj",
@@ -1035,7 +723,7 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 56,
+          "bpm": 58,
           "lives": 5,
           "key": "C",
           "events": [
@@ -1067,38 +755,6 @@ export const UNITS = [
               "beat": 6,
               "chord": {
                 "root": "C",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "G",
-                "quality": "sus2",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "G",
-                "quality": "maj",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "G",
-                "quality": "sus4",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "G",
                 "quality": "maj",
                 "octave": 4
               }
@@ -1147,7 +803,7 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 58,
+          "bpm": 60,
           "lives": 5,
           "key": "C",
           "events": [
@@ -1297,38 +953,6 @@ export const UNITS = [
                 "quality": "maj7",
                 "octave": 4
               }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "F",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "G",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "F",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "C",
-                "quality": "maj7",
-                "octave": 4
-              }
             }
           ]
         }
@@ -1384,7 +1008,7 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "A",
+                "root": "E",
                 "quality": "m7",
                 "octave": 4
               }
@@ -1392,45 +1016,13 @@ export const UNITS = [
             {
               "beat": 4,
               "chord": {
-                "root": "E",
+                "root": "A",
                 "quality": "m7",
                 "octave": 4
               }
             },
             {
               "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "A",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "E",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "A",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
               "chord": {
                 "root": "D",
                 "quality": "m7",
@@ -1478,7 +1070,7 @@ export const UNITS = [
             {
               "beat": 0,
               "chord": {
-                "root": "D",
+                "root": "G",
                 "quality": "7",
                 "octave": 4
               }
@@ -1486,29 +1078,13 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "G",
-                "quality": "7",
+                "root": "C",
+                "quality": "maj7",
                 "octave": 4
               }
             },
             {
               "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "F",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
               "chord": {
                 "root": "D",
                 "quality": "7",
@@ -1516,23 +1092,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 10,
-              "chord": {
-                "root": "G",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
+              "beat": 6,
               "chord": {
                 "root": "G",
                 "quality": "7",
@@ -1605,46 +1165,6 @@ export const UNITS = [
                 "quality": "m7",
                 "octave": 4
               }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "B",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "E",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "A",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "B",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "E",
-                "quality": "7",
-                "octave": 4
-              }
             }
           ]
         }
@@ -1710,46 +1230,6 @@ export const UNITS = [
               "chord": {
                 "root": "D",
                 "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "D#",
-                "quality": "dim7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "E",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "F",
-                "quality": "dim7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C#",
-                "quality": "dim7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "C",
-                "quality": "maj7",
                 "octave": 4
               }
             }
@@ -1832,38 +1312,6 @@ export const UNITS = [
                 "quality": "m7b5",
                 "octave": 4
               }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "F",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "A",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "D",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "E",
-                "quality": "m7b5",
-                "octave": 4
-              }
             }
           ]
         }
@@ -1934,30 +1382,6 @@ export const UNITS = [
             },
             {
               "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "G",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "maj7",
@@ -2054,30 +1478,6 @@ export const UNITS = [
                 "quality": "maj7",
                 "octave": 4
               }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "G",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "C",
-                "quality": "maj7",
-                "octave": 4
-              }
             }
           ]
         }
@@ -2149,7 +1549,7 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "G",
+                "root": "A",
                 "quality": "m7",
                 "octave": 4
               }
@@ -2157,37 +1557,13 @@ export const UNITS = [
             {
               "beat": 8,
               "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "F",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "A",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
                 "root": "D",
                 "quality": "7",
                 "octave": 4
               }
             },
             {
-              "beat": 16,
+              "beat": 10,
               "chord": {
                 "root": "G",
                 "quality": "maj7",
@@ -2255,30 +1631,6 @@ export const UNITS = [
             },
             {
               "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "G",
-                "quality": "7b9",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "m7",
@@ -2355,45 +1707,21 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "C",
+                "root": "F",
                 "quality": "m7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
               "beat": 8,
               "chord": {
-                "root": "F",
+                "root": "Bb",
                 "quality": "7",
                 "octave": 3
               }
             },
             {
               "beat": 10,
-              "chord": {
-                "root": "Bb",
-                "quality": "maj7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "F",
-                "quality": "m7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "Bb",
-                "quality": "7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 16,
               "chord": {
                 "root": "Eb",
                 "quality": "maj7",
@@ -2461,54 +1789,6 @@ export const UNITS = [
             },
             {
               "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "Db",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "C",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "Db",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
               "chord": {
                 "root": "C",
                 "quality": "maj7",
@@ -2597,38 +1877,6 @@ export const UNITS = [
                 "quality": "shell-maj7",
                 "octave": 4
               }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "D",
-                "quality": "shell-m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "G",
-                "quality": "shell-7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "shell-maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "C",
-                "quality": "shell-maj7",
-                "octave": 4
-              }
             }
           ]
         }
@@ -2700,21 +1948,13 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "C",
-                "quality": "shell-maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
                 "root": "D",
                 "quality": "shell-m7",
                 "octave": 4
               }
             },
             {
-              "beat": 10,
+              "beat": 8,
               "chord": {
                 "root": "G",
                 "quality": "shell-7",
@@ -2722,15 +1962,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "shell-maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "shell-maj7",
@@ -2807,21 +2039,13 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "F",
-                "quality": "shell-maj7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
                 "root": "G",
                 "quality": "shell-m7",
                 "octave": 3
               }
             },
             {
-              "beat": 10,
+              "beat": 8,
               "chord": {
                 "root": "C",
                 "quality": "shell-7",
@@ -2829,19 +2053,11 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
+              "beat": 10,
               "chord": {
                 "root": "F",
                 "quality": "shell-maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "F",
-                "quality": "shell-maj7",
-                "octave": 4
+                "octave": 3
               }
             }
           ]
@@ -2920,20 +2136,12 @@ export const UNITS = [
               "beat": 6,
               "chord": {
                 "root": "C",
-                "quality": "shell-maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "C",
                 "quality": "shell-m7",
                 "octave": 4
               }
             },
             {
-              "beat": 10,
+              "beat": 8,
               "chord": {
                 "root": "F",
                 "quality": "shell-7",
@@ -2941,15 +2149,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
-              "chord": {
-                "root": "Bb",
-                "quality": "shell-maj7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "Bb",
                 "quality": "shell-maj7",
@@ -3018,37 +2218,13 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "D",
-                "quality": "rootless-m9",
+                "root": "G",
+                "quality": "rootless-13",
                 "octave": 3
               }
             },
             {
               "beat": 4,
-              "chord": {
-                "root": "G",
-                "quality": "rootless-13",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "G",
-                "quality": "rootless-13",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "C",
-                "quality": "rootless-maj9",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "rootless-maj9",
@@ -3125,21 +2301,13 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "C",
-                "quality": "rootless-maj9",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
                 "root": "D",
                 "quality": "rootless-m9",
                 "octave": 3
               }
             },
             {
-              "beat": 10,
+              "beat": 8,
               "chord": {
                 "root": "G",
                 "quality": "rootless-13",
@@ -3147,7 +2315,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
+              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "rootless-maj9",
@@ -3224,21 +2392,13 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "F",
-                "quality": "rootless-maj9",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
                 "root": "G",
                 "quality": "rootless-m9",
                 "octave": 3
               }
             },
             {
-              "beat": 10,
+              "beat": 8,
               "chord": {
                 "root": "C",
                 "quality": "rootless-13",
@@ -3246,7 +2406,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
+              "beat": 10,
               "chord": {
                 "root": "F",
                 "quality": "rootless-maj9",
@@ -3305,7 +2465,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 3,
+              "beat": 2.5,
               "chord": {
                 "root": "G",
                 "quality": "rootless-13",
@@ -3321,39 +2481,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 7,
-              "chord": {
-                "root": "C",
-                "quality": "rootless-maj9",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "D",
-                "quality": "rootless-m9",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 11,
-              "chord": {
-                "root": "G",
-                "quality": "rootless-13",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "rootless-maj9",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 15,
+              "beat": 6.5,
               "chord": {
                 "root": "C",
                 "quality": "rootless-maj9",
@@ -3447,30 +2575,6 @@ export const UNITS = [
                 "quality": "maj9",
                 "octave": 4
               }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "D",
-                "quality": "m9",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "G",
-                "quality": "9",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "maj9",
-                "octave": 4
-              }
             }
           ]
         }
@@ -3539,37 +2643,13 @@ export const UNITS = [
             {
               "beat": 4,
               "chord": {
-                "root": "C",
-                "quality": "maj9",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "m11",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "G",
-                "quality": "9sus4",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
                 "root": "G",
                 "quality": "9",
                 "octave": 4
               }
             },
             {
-              "beat": 12,
+              "beat": 6,
               "chord": {
                 "root": "C",
                 "quality": "maj9",
@@ -3646,29 +2726,13 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "C",
-                "quality": "13",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "F",
-                "quality": "maj9",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
                 "root": "D",
                 "quality": "m9",
                 "octave": 4
               }
             },
             {
-              "beat": 12,
+              "beat": 8,
               "chord": {
                 "root": "G",
                 "quality": "13",
@@ -3676,7 +2740,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "maj9",
@@ -3743,47 +2807,23 @@ export const UNITS = [
               "beat": 2,
               "chord": {
                 "root": "C",
-                "quality": "69",
+                "quality": "m6",
                 "octave": 4
               }
             },
             {
               "beat": 4,
               "chord": {
-                "root": "F",
-                "quality": "6",
+                "root": "C",
+                "quality": "69",
                 "octave": 4
               }
             },
             {
               "beat": 6,
               "chord": {
-                "root": "F",
-                "quality": "m6",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
                 "root": "C",
-                "quality": "69",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "F",
-                "quality": "m6",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "69",
+                "quality": "6",
                 "octave": 4
               }
             }
@@ -3833,21 +2873,13 @@ export const UNITS = [
             {
               "beat": 0,
               "chord": {
-                "root": "D",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 2,
-              "chord": {
                 "root": "G",
                 "quality": "7b9",
                 "octave": 3
               }
             },
             {
-              "beat": 4,
+              "beat": 2,
               "chord": {
                 "root": "C",
                 "quality": "m6",
@@ -3855,7 +2887,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 6,
+              "beat": 4,
               "chord": {
                 "root": "G",
                 "quality": "7#9",
@@ -3863,7 +2895,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 8,
+              "beat": 6,
               "chord": {
                 "root": "C",
                 "quality": "m6",
@@ -3871,15 +2903,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 10,
-              "chord": {
-                "root": "D",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
+              "beat": 8,
               "chord": {
                 "root": "G",
                 "quality": "7alt",
@@ -3887,7 +2911,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "m6",
@@ -3963,7 +2987,7 @@ export const UNITS = [
               "chord": {
                 "root": "A",
                 "quality": "7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
@@ -3979,7 +3003,7 @@ export const UNITS = [
               "chord": {
                 "root": "G",
                 "quality": "7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
@@ -3987,30 +3011,6 @@ export const UNITS = [
               "chord": {
                 "root": "C",
                 "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "A",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "G",
-                "quality": "7",
                 "octave": 4
               }
             }
@@ -4075,7 +3075,7 @@ export const UNITS = [
               "chord": {
                 "root": "A",
                 "quality": "7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
@@ -4091,7 +3091,7 @@ export const UNITS = [
               "chord": {
                 "root": "G",
                 "quality": "7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
@@ -4099,30 +3099,6 @@ export const UNITS = [
               "chord": {
                 "root": "C",
                 "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "E",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "A",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
                 "octave": 4
               }
             }
@@ -4177,7 +3153,7 @@ export const UNITS = [
             {
               "beat": 0,
               "chord": {
-                "root": "E",
+                "root": "D",
                 "quality": "m7",
                 "octave": 4
               }
@@ -4185,29 +3161,13 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "A",
+                "root": "G",
                 "quality": "7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
               "beat": 4,
-              "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "G",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
               "chord": {
                 "root": "C",
                 "quality": "maj7",
@@ -4215,7 +3175,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 10,
+              "beat": 6,
               "chord": {
                 "root": "C",
                 "quality": "7",
@@ -4223,15 +3183,15 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
+              "beat": 8,
               "chord": {
                 "root": "F",
                 "quality": "7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "Bb",
                 "quality": "maj7",
@@ -4321,32 +3281,8 @@ export const UNITS = [
             {
               "beat": 8,
               "chord": {
-                "root": "D",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "G",
-                "quality": "7",
-                "octave": 3
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "F",
-                "quality": "7",
+                "root": "Bb",
+                "quality": "maj7",
                 "octave": 3
               }
             }
@@ -4396,61 +3332,45 @@ export const UNITS = [
             {
               "beat": 0,
               "chord": {
-                "root": "C",
-                "quality": "maj7",
+                "root": "F",
+                "quality": "m7",
                 "octave": 4
               }
             },
             {
               "beat": 2,
               "chord": {
-                "root": "F",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 4,
-              "chord": {
                 "root": "Bb",
                 "quality": "7",
                 "octave": 3
               }
             },
             {
-              "beat": 6,
+              "beat": 4,
               "chord": {
                 "root": "C",
                 "quality": "maj7",
+                "octave": 4
+              }
+            },
+            {
+              "beat": 6,
+              "chord": {
+                "root": "F",
+                "quality": "m7",
                 "octave": 4
               }
             },
             {
               "beat": 8,
               "chord": {
-                "root": "C",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "F",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
                 "root": "Bb",
                 "quality": "7",
                 "octave": 3
               }
             },
             {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "C",
                 "quality": "maj7",
@@ -4519,7 +3439,7 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "C",
+                "root": "F",
                 "quality": "7",
                 "octave": 4
               }
@@ -4527,7 +3447,7 @@ export const UNITS = [
             {
               "beat": 4,
               "chord": {
-                "root": "F",
+                "root": "C",
                 "quality": "7",
                 "octave": 4
               }
@@ -4535,7 +3455,7 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "F",
+                "root": "G",
                 "quality": "7",
                 "octave": 4
               }
@@ -4543,7 +3463,7 @@ export const UNITS = [
             {
               "beat": 8,
               "chord": {
-                "root": "C",
+                "root": "F",
                 "quality": "7",
                 "octave": 4
               }
@@ -4552,38 +3472,6 @@ export const UNITS = [
               "beat": 10,
               "chord": {
                 "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "G",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "F",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "G",
                 "quality": "7",
                 "octave": 4
               }
@@ -4627,68 +3515,12 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 58,
+          "bpm": 60,
           "lives": 5,
           "key": "C",
           "events": [
             {
               "beat": 0,
-              "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 2,
-              "chord": {
-                "root": "F",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 4,
-              "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "F",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "F",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "F#",
-                "quality": "dim7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
               "chord": {
                 "root": "E",
                 "quality": "m7",
@@ -4696,7 +3528,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 16,
+              "beat": 2,
               "chord": {
                 "root": "A",
                 "quality": "7",
@@ -4704,7 +3536,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 18,
+              "beat": 4,
               "chord": {
                 "root": "D",
                 "quality": "m7",
@@ -4712,10 +3544,18 @@ export const UNITS = [
               }
             },
             {
-              "beat": 20,
+              "beat": 6,
               "chord": {
                 "root": "G",
                 "quality": "7",
+                "octave": 4
+              }
+            },
+            {
+              "beat": 8,
+              "chord": {
+                "root": "C",
+                "quality": "maj7",
                 "octave": 4
               }
             }
@@ -4763,7 +3603,7 @@ export const UNITS = [
           ]
         },
         "practice": {
-          "bpm": 60,
+          "bpm": 62,
           "lives": 5,
           "key": "C",
           "events": [
@@ -4794,7 +3634,7 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "C",
+                "root": "A",
                 "quality": "7",
                 "octave": 4
               }
@@ -4802,29 +3642,13 @@ export const UNITS = [
             {
               "beat": 8,
               "chord": {
-                "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "A",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
                 "root": "D",
                 "quality": "m7",
                 "octave": 4
               }
             },
             {
-              "beat": 14,
+              "beat": 10,
               "chord": {
                 "root": "G",
                 "quality": "7",
@@ -4832,17 +3656,9 @@ export const UNITS = [
               }
             },
             {
-              "beat": 16,
+              "beat": 12,
               "chord": {
                 "root": "C",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "A",
                 "quality": "7",
                 "octave": 4
               }
@@ -4906,7 +3722,7 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "C",
+                "root": "F",
                 "quality": "m7",
                 "octave": 4
               }
@@ -4914,7 +3730,7 @@ export const UNITS = [
             {
               "beat": 4,
               "chord": {
-                "root": "F",
+                "root": "C",
                 "quality": "m7",
                 "octave": 4
               }
@@ -4922,8 +3738,8 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "F",
-                "quality": "m7",
+                "root": "G",
+                "quality": "7b9",
                 "octave": 4
               }
             },
@@ -4932,46 +3748,6 @@ export const UNITS = [
               "chord": {
                 "root": "C",
                 "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "C",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "F",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "F",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "C",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "G",
-                "quality": "7b9",
                 "octave": 4
               }
             }
@@ -5479,28 +4255,12 @@ export const UNITS = [
               "beat": 0,
               "chord": {
                 "root": "C",
-                "quality": "note",
+                "quality": "maj7",
                 "octave": 4
               }
             },
             {
               "beat": 2,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 4,
-              "chord": {
-                "root": "E",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
               "chord": {
                 "root": "F",
                 "quality": "note",
@@ -5508,67 +4268,19 @@ export const UNITS = [
               }
             },
             {
-              "beat": 8,
+              "beat": 4,
               "chord": {
                 "root": "C",
-                "quality": "note",
+                "quality": "maj7",
                 "octave": 4
               }
             },
             {
-              "beat": 10,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "E",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
+              "beat": 6,
               "chord": {
                 "root": "F#",
                 "quality": "note",
                 "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "A",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 20,
-              "chord": {
-                "root": "B",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 22,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 5
               }
             }
           ]
@@ -5632,7 +4344,7 @@ export const UNITS = [
             {
               "beat": 4,
               "chord": {
-                "root": "A",
+                "root": "G",
                 "quality": "note",
                 "octave": 4
               }
@@ -5640,15 +4352,15 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "C",
+                "root": "F",
                 "quality": "note",
-                "octave": 5
+                "octave": 4
               }
             },
             {
               "beat": 8,
               "chord": {
-                "root": "G",
+                "root": "C",
                 "quality": "note",
                 "octave": 4
               }
@@ -5656,57 +4368,9 @@ export const UNITS = [
             {
               "beat": 10,
               "chord": {
-                "root": "B",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "F",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "D",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
                 "root": "E",
                 "quality": "note",
                 "octave": 4
-              }
-            },
-            {
-              "beat": 18,
-              "chord": {
-                "root": "G",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 20,
-              "chord": {
-                "root": "B",
-                "quality": "note",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 22,
-              "chord": {
-                "root": "C",
-                "quality": "note",
-                "octave": 5
               }
             }
           ]
@@ -5787,27 +4451,19 @@ export const UNITS = [
               "chord": {
                 "root": "Bb",
                 "quality": "maj7",
-                "octave": 4
+                "octave": 3
               }
             },
             {
               "beat": 6,
               "chord": {
-                "root": "Eb",
-                "quality": "maj7",
-                "octave": 4
+                "root": "A",
+                "quality": "m7b5",
+                "octave": 3
               }
             },
             {
               "beat": 8,
-              "chord": {
-                "root": "A",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 10,
               "chord": {
                 "root": "D",
                 "quality": "7",
@@ -5815,11 +4471,11 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
+              "beat": 10,
               "chord": {
                 "root": "G",
                 "quality": "m7",
-                "octave": 4
+                "octave": 3
               }
             }
           ]
@@ -5877,21 +4533,13 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "F",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 4,
-              "chord": {
                 "root": "D",
                 "quality": "m7b5",
                 "octave": 4
               }
             },
             {
-              "beat": 6,
+              "beat": 4,
               "chord": {
                 "root": "G",
                 "quality": "7",
@@ -5899,7 +4547,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 8,
+              "beat": 6,
               "chord": {
                 "root": "C",
                 "quality": "m7",
@@ -5989,30 +4637,6 @@ export const UNITS = [
                 "quality": "maj7",
                 "octave": 4
               }
-            },
-            {
-              "beat": 10,
-              "chord": {
-                "root": "B",
-                "quality": "m7b5",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "E",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "A",
-                "quality": "m7",
-                "octave": 4
-              }
             }
           ]
         }
@@ -6069,8 +4693,8 @@ export const UNITS = [
             {
               "beat": 2,
               "chord": {
-                "root": "C",
-                "quality": "maj7",
+                "root": "D",
+                "quality": "7#11",
                 "octave": 4
               }
             },
@@ -6078,28 +4702,12 @@ export const UNITS = [
               "beat": 4,
               "chord": {
                 "root": "D",
-                "quality": "7#11",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 6,
-              "chord": {
-                "root": "D",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 8,
-              "chord": {
-                "root": "D",
                 "quality": "m7",
                 "octave": 4
               }
             },
             {
-              "beat": 10,
+              "beat": 6,
               "chord": {
                 "root": "G",
                 "quality": "7",
@@ -6107,7 +4715,7 @@ export const UNITS = [
               }
             },
             {
-              "beat": 12,
+              "beat": 8,
               "chord": {
                 "root": "C",
                 "quality": "maj7",
@@ -6185,7 +4793,7 @@ export const UNITS = [
             {
               "beat": 6,
               "chord": {
-                "root": "G",
+                "root": "C",
                 "quality": "m7",
                 "octave": 4
               }
@@ -6193,7 +4801,7 @@ export const UNITS = [
             {
               "beat": 8,
               "chord": {
-                "root": "C",
+                "root": "F",
                 "quality": "7",
                 "octave": 4
               }
@@ -6201,33 +4809,9 @@ export const UNITS = [
             {
               "beat": 10,
               "chord": {
-                "root": "F",
-                "quality": "maj7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 12,
-              "chord": {
-                "root": "C",
-                "quality": "m7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 14,
-              "chord": {
-                "root": "F",
-                "quality": "7",
-                "octave": 4
-              }
-            },
-            {
-              "beat": 16,
-              "chord": {
                 "root": "Bb",
                 "quality": "maj7",
-                "octave": 4
+                "octave": 3
               }
             }
           ]
