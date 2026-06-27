@@ -8,13 +8,16 @@ import { MiniKeyboard } from "./keyboard.js";
 import { UNITS, LESSONS, LEVELS } from "./course.js";
 import { SONGS, TIER_NAMES } from "./songs.js";
 import { chord as buildChord } from "./music.js";
+import { ScoreImporter } from "./score-import.js";
 
 const input = new MidiInput();
 const synth = new Synth();
 let game = null;
-let currentMode = "lesson";   // "lesson" | "song"
+let currentMode = "lesson";   // "lesson" | "song" | "import"
 let currentId = null;
 let currentLevel = null;
+let selectedScore = null;
+const scoreImporter = new ScoreImporter();
 
 const ORDER = [];
 for (const u of UNITS) for (const ls of u.lessons) ORDER.push(ls.id);
@@ -152,6 +155,98 @@ $("#btn-back-home").addEventListener("click", () => show("home"));
 $("#btn-lesson-back").addEventListener("click", () => { renderCourse(); show("levels"); });
 $("#btn-songs-back").addEventListener("click", () => show("home"));
 
+// ---- score import ----------------------------------------------------------
+const scoreFile = $("#score-file");
+const scoreDropzone = $("#score-dropzone");
+const importFile = $("#import-file");
+const importProgress = $("#import-progress");
+const importError = $("#import-error");
+const convertButton = $("#btn-convert");
+
+function formatBytes(bytes) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+}
+
+function setImportError(message = "") {
+  importError.textContent = message;
+  importError.hidden = !message;
+}
+
+function resetImport() {
+  selectedScore = null;
+  scoreFile.value = "";
+  importFile.hidden = true;
+  scoreDropzone.hidden = false;
+  importProgress.hidden = true;
+  convertButton.disabled = true;
+  convertButton.textContent = "Transformer et jouer";
+  setImportError();
+}
+
+function selectScore(file) {
+  try {
+    scoreImporter.validate(file);
+    selectedScore = file;
+    $("#import-file-name").textContent = file.name;
+    $("#import-file-meta").textContent = `${formatBytes(file.size)} · prêt à convertir`;
+    scoreDropzone.hidden = true;
+    importFile.hidden = false;
+    importProgress.hidden = true;
+    convertButton.disabled = false;
+    setImportError();
+  } catch (error) {
+    resetImport();
+    setImportError(error.message);
+  }
+}
+
+scoreFile.addEventListener("change", () => selectScore(scoreFile.files[0]));
+$("#btn-remove-score").addEventListener("click", resetImport);
+scoreDropzone.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    scoreFile.click();
+  }
+});
+for (const eventName of ["dragenter", "dragover"]) {
+  scoreDropzone.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    scoreDropzone.classList.add("dragging");
+  });
+}
+for (const eventName of ["dragleave", "drop"]) {
+  scoreDropzone.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    scoreDropzone.classList.remove("dragging");
+  });
+}
+scoreDropzone.addEventListener("drop", (event) => selectScore(event.dataTransfer.files[0]));
+
+convertButton.addEventListener("click", async () => {
+  if (!selectedScore) return;
+  convertButton.disabled = true;
+  importFile.hidden = true;
+  importProgress.hidden = false;
+  setImportError();
+  try {
+    const level = await scoreImporter.convert(selectedScore, ({ percent, message }) => {
+      $("#import-status").textContent = message;
+      $("#import-percent").textContent = `${percent}%`;
+      $("#import-progress-fill").style.width = `${percent}%`;
+    });
+    currentMode = "import";
+    currentId = `import:${selectedScore.name}`;
+    currentLevel = level;
+    launch(`Survie · ${level.name}`);
+  } catch (error) {
+    importProgress.hidden = true;
+    importFile.hidden = false;
+    convertButton.disabled = false;
+    setImportError(error.message);
+  }
+});
+
 // ---- gameplay --------------------------------------------------------------
 function startLesson(id) {
   currentMode = "lesson"; currentId = id; currentLevel = LEVELS[id];
@@ -248,7 +343,11 @@ function countInThenStart() {
   countInTimer = setTimeout(tick, 600);
 }
 
-function retry() { currentMode === "song" ? startSong(currentId) : startLesson(currentId); }
+function retry() {
+  if (currentMode === "song") startSong(currentId);
+  else if (currentMode === "import") launch(`Survie · ${currentLevel.name}`);
+  else startLesson(currentId);
+}
 
 $("#btn-pause").addEventListener("click", () => {
   if (!game) return;
@@ -261,6 +360,7 @@ $("#btn-quit").addEventListener("click", () => {
   if (game) game.destroy();
   game = null;
   if (currentMode === "song") { renderSongs(); show("songs"); }
+  else if (currentMode === "import") show("home");
   else { renderCourse(); show("levels"); }
 });
 
@@ -270,7 +370,9 @@ const RESULT_TITLES = { 3: "Flawless!", 2: "Great playing!", 1: "Cleared!", 0: "
 function showResults(r) {
   saveStar(currentId, r.stars);
   show("results");
-  $("#result-eyebrow").textContent = r.completed ? (currentMode === "song" ? "Song complete" : "Lesson complete") : "Out of lives";
+  $("#result-eyebrow").textContent = r.completed
+    ? (currentMode === "song" ? "Song complete" : currentMode === "import" ? "Partition terminée" : "Lesson complete")
+    : "Out of lives";
   $("#result-title").textContent = r.completed ? RESULT_TITLES[r.stars] : "So close — try again";
   const starsEl = $("#result-stars");
   starsEl.innerHTML = starRow(r.stars);
@@ -282,7 +384,11 @@ function showResults(r) {
 
   const nextBtn = $("#btn-next");
   const backBtn = $("#btn-results-levels");
-  if (currentMode === "song") {
+  if (currentMode === "import") {
+    nextBtn.style.display = "none";
+    backBtn.textContent = "Nouvelle partition";
+    backBtn.onclick = () => { resetImport(); show("home"); };
+  } else if (currentMode === "song") {
     const nextId = SONG_ORDER[SONG_ORDER.indexOf(currentId) + 1];
     if (nextId && r.stars > 0) { nextBtn.style.display = ""; nextBtn.onclick = () => startSong(nextId); }
     else nextBtn.style.display = "none";
