@@ -267,9 +267,13 @@ $("#btn-quit").addEventListener("click", () => {
 // ---- results ---------------------------------------------------------------
 const RESULT_TITLES = { 3: "Flawless!", 2: "Great playing!", 1: "Cleared!", 0: "Keep practicing" };
 
+let _lastResult = null;
+
 function showResults(r) {
   saveStar(currentId, r.stars);
   show("results");
+  _lastResult = { ...r, levelName: currentLevel?.title || currentLevel?.name || currentId };
+
   $("#result-eyebrow").textContent = r.completed ? (currentMode === "song" ? "Song complete" : "Lesson complete") : "Out of lives";
   $("#result-title").textContent = r.completed ? RESULT_TITLES[r.stars] : "So close — try again";
   const starsEl = $("#result-stars");
@@ -279,6 +283,10 @@ function showResults(r) {
   $("#result-score").textContent = r.score;
   $("#result-combo").textContent = r.maxCombo + "×";
   $("#result-notes").textContent = `${r.hits}/${r.total}`;
+
+  // Reset AI coach panel
+  const coachPanel = $("#coach-panel");
+  if (coachPanel) { coachPanel.hidden = true; $("#coach-text").textContent = ""; }
 
   const nextBtn = $("#btn-next");
   const backBtn = $("#btn-results-levels");
@@ -297,6 +305,63 @@ function showResults(r) {
   }
   if (r.stars > 0) confetti(r.stars === 3 ? 120 : 60);
 }
+
+// ---- AI Coach (Claude API) -------------------------------------------------
+const COACH_API_KEY = "jazzkeys.anthropic_key";
+
+$("#btn-coach").addEventListener("click", async () => {
+  let apiKey = localStorage.getItem(COACH_API_KEY);
+  if (!apiKey) {
+    apiKey = prompt("Clé API Anthropic (stockée localement, jamais envoyée à nos serveurs) :");
+    if (!apiKey) return;
+    localStorage.setItem(COACH_API_KEY, apiKey.trim());
+  }
+
+  const panel   = $("#coach-panel");
+  const textEl  = $("#coach-text");
+  panel.hidden  = false;
+  textEl.textContent = "Analyse en cours…";
+
+  const r = _lastResult;
+  if (!r) { textEl.textContent = "Pas de résultat à analyser."; return; }
+
+  const prompt = `Tu es un coach de piano jazz bienveillant et précis.
+Voici les résultats d'une session de jeu :
+- Morceau / leçon : ${r.levelName}
+- Précision : ${Math.round(r.accuracy * 100)}%
+- Score : ${r.score}
+- Combo max : ${r.maxCombo}×
+- Notes jouées : ${r.hits}/${r.total}
+- Étoiles : ${r.stars}/3
+
+En 3 à 5 phrases, donne un feedback concis, motivant et actionnable. Indique ce qui est bien, ce qu'il faut travailler spécifiquement (timing, précision, combo), et une technique ou exercice concret pour progresser. Réponds en français.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 350,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Erreur API ${res.status}`);
+    }
+    const data = await res.json();
+    textEl.textContent = data.content[0].text;
+  } catch (e) {
+    textEl.textContent = `Erreur : ${e.message}`;
+    if (e.message.includes("401")) localStorage.removeItem(COACH_API_KEY);
+  }
+});
 
 function confetti(count) {
   const colors = ["#f6b352", "#ef6f5e", "#8e7bf2", "#e879c0", "#34d8b4"];

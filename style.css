@@ -242,6 +242,13 @@ kbd { font-family: var(--font); background: var(--surface-2); border: 1px solid 
 .stat.big span:last-child { font-size: 26px; }
 .result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
+/* ---------- AI Coach ---------- */
+.coach-section { margin-top: 22px; border-top: 1px solid var(--border); padding-top: 20px; }
+.coach-btn { font-size: 14px; padding: 10px 20px; gap: 7px; color: var(--teal); border-color: rgba(52,216,180,0.3); }
+.coach-btn:hover { background: rgba(52,216,180,0.08); border-color: rgba(52,216,180,0.5); color: var(--teal); }
+.coach-panel { margin-top: 14px; background: rgba(52,216,180,0.05); border: 1px solid rgba(52,216,180,0.2); border-radius: var(--r); padding: 16px 18px; text-align: left; }
+.coach-text { font-size: 14.5px; line-height: 1.7; color: var(--text-dim); white-space: pre-wrap; }
+
 /* ---------- confetti ---------- */
 .confetti { position: fixed; top: -12px; width: 9px; height: 14px; border-radius: 2px; z-index: 50; pointer-events: none; will-change: transform; }
 
