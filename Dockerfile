@@ -8,11 +8,12 @@ ARG AUDIVERIS_PACKAGE=Audiveris-5.10.2-ubuntu24.04-x86_64.deb
 COPY --from=nodebase /usr/local/ /usr/local/
 
 RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl poppler-utils \
-  && mkdir -p /usr/share/applications /usr/share/desktop-directories \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates curl poppler-utils libasound2t64 libxi6 libxtst6 \
   && curl -fsSL -o /tmp/audiveris.deb \
     "https://github.com/Audiveris/audiveris/releases/download/${AUDIVERIS_VERSION}/${AUDIVERIS_PACKAGE}" \
-  && apt-get install -y --no-install-recommends /tmp/audiveris.deb \
+  && dpkg-deb --extract /tmp/audiveris.deb / \
+  && test -x /opt/audiveris/bin/Audiveris \
   && rm -f /tmp/audiveris.deb \
   && rm -rf /var/lib/apt/lists/*
 
