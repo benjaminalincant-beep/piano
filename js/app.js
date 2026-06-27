@@ -8,6 +8,7 @@ import { MiniKeyboard } from "./keyboard.js";
 import { UNITS, LESSONS, LEVELS } from "./course.js";
 import { SONGS, TIER_NAMES } from "./songs.js";
 import { chord as buildChord } from "./music.js";
+import { parseMidiFile } from "./midi-import.js";
 
 const input = new MidiInput();
 const synth = new Synth();
@@ -248,7 +249,11 @@ function countInThenStart() {
   countInTimer = setTimeout(tick, 600);
 }
 
-function retry() { currentMode === "song" ? startSong(currentId) : startLesson(currentId); }
+function retry() {
+  if (currentMode === "midi") { currentLevel = _importedLevel; launch(`🎵 ${_importedLevel.title}`); }
+  else if (currentMode === "song") startSong(currentId);
+  else startLesson(currentId);
+}
 
 $("#btn-pause").addEventListener("click", () => {
   if (!game) return;
@@ -290,7 +295,11 @@ function showResults(r) {
 
   const nextBtn = $("#btn-next");
   const backBtn = $("#btn-results-levels");
-  if (currentMode === "song") {
+  if (currentMode === "midi") {
+    nextBtn.style.display = "none";
+    backBtn.textContent = "Accueil";
+    backBtn.onclick = () => show("home");
+  } else if (currentMode === "song") {
     const nextId = SONG_ORDER[SONG_ORDER.indexOf(currentId) + 1];
     if (nextId && r.stars > 0) { nextBtn.style.display = ""; nextBtn.onclick = () => startSong(nextId); }
     else nextBtn.style.display = "none";
@@ -380,6 +389,81 @@ function confetti(count) {
   }
 }
 $("#btn-retry").addEventListener("click", retry);
+
+// ---- MIDI Survival (drag & drop) -------------------------------------------
+let _importedLevel = null;
+
+function setupMidiDrop() {
+  const zone      = $("#midi-drop-zone");
+  const fileInput = $("#midi-file-input");
+  const idleEl    = $("#midi-drop-idle");
+  const loadedEl  = $("#midi-loaded");
+  const titleEl   = $("#midi-loaded-title");
+  const metaEl    = $("#midi-loaded-meta");
+  const errorEl   = $("#midi-drop-error");
+
+  async function handleFile(file) {
+    if (!file || !/\.(mid|midi)$/i.test(file.name)) {
+      showError("Glisse un fichier .mid ou .midi");
+      return;
+    }
+    errorEl.hidden = true;
+    titleEl.textContent = "Chargement…";
+    metaEl.textContent  = "";
+    idleEl.hidden  = true;
+    loadedEl.hidden = false;
+    try {
+      _importedLevel = await parseMidiFile(file);
+      titleEl.textContent = _importedLevel.title;
+      metaEl.textContent  = `${_importedLevel._chordCount} accords · ${Math.round(_importedLevel.bpm)} bpm · ${_importedLevel.lives} vies`;
+    } catch (e) {
+      idleEl.hidden  = false;
+      loadedEl.hidden = true;
+      showError("Impossible de lire ce fichier : " + e.message);
+    }
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.hidden = false;
+    setTimeout(() => { errorEl.hidden = true; }, 4000);
+  }
+
+  // File input (browse button)
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    fileInput.value = "";
+  });
+
+  // Drag & drop
+  zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("drag-over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+  zone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    zone.classList.remove("drag-over");
+    const file = e.dataTransfer?.files?.[0];
+    if (file) handleFile(file);
+  });
+
+  // Play button
+  $("#btn-play-midi").addEventListener("click", () => {
+    if (!_importedLevel) return;
+    currentMode  = "midi";
+    currentId    = _importedLevel.id;
+    currentLevel = _importedLevel;
+    launch(`🎵 ${_importedLevel.title}`);
+  });
+
+  // Reset button
+  $("#btn-midi-reset").addEventListener("click", () => {
+    _importedLevel = null;
+    idleEl.hidden  = false;
+    loadedEl.hidden = true;
+    errorEl.hidden  = true;
+  });
+}
+
+setupMidiDrop();
 
 // ---- boot ------------------------------------------------------------------
 if (!input.supported) {

@@ -75,12 +75,19 @@ export class Game {
     this._coachKey = null;
 
     level.events.forEach((ev, i) => {
-      const c       = ev.chord;
-      const root    = Array.isArray(c) ? c[0] : c.root;
-      const quality = Array.isArray(c) ? c[1] : c.quality;
-      const octave  = (Array.isArray(c) ? c[2] : c.octave) ?? 4;
-      const midis   = buildChord(root, quality, octave);
-      const name    = chordSymbol(root, quality);
+      let midis, name;
+      if (ev.midis) {
+        // Raw MIDI import — skip chord builder
+        midis = ev.midis;
+        name  = ev.name || ev.midis.map(m => NOTE_LETTERS[m % 12]).join("·");
+      } else {
+        const c       = ev.chord;
+        const root    = Array.isArray(c) ? c[0] : c.root;
+        const quality = Array.isArray(c) ? c[1] : c.quality;
+        const octave  = (Array.isArray(c) ? c[2] : c.octave) ?? 4;
+        midis = buildChord(root, quality, octave);
+        name  = chordSymbol(root, quality);
+      }
       const target  = COUNT_IN + this.lookahead + ev.beat * beatMs;
       const refs    = [];
       for (const midi of midis) {

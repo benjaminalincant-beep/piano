@@ -34,6 +34,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -241,6 +242,41 @@ kbd { font-family: var(--font); background: var(--surface-2); border: 1px solid 
 .stat.big { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; align-items: center; }
 .stat.big span:last-child { font-size: 26px; }
 .result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- MIDI drop zone ---------- */
+.midi-drop-zone {
+  max-width: 440px; margin: 0 auto 22px;
+  border: 1.5px dashed rgba(52,216,180,0.35);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  background: rgba(52,216,180,0.04);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+.midi-drop-zone.drag-over {
+  border-color: var(--teal);
+  background: rgba(52,216,180,0.07);
+  box-shadow: 0 0 0 3px rgba(52,216,180,0.18), 0 8px 28px -8px rgba(52,216,180,0.3);
+}
+.midi-drop-idle {
+  display: flex; align-items: center; gap: 14px;
+}
+.midi-drop-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: none;
+  border-radius: 12px; background: rgba(52,216,180,0.12); color: var(--teal); }
+.midi-drop-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.midi-drop-sub   { font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
+.midi-browse-btn { font-size: 13px; padding: 8px 16px; margin-left: auto; flex: none; white-space: nowrap; cursor: pointer; }
+.midi-drop-error { color: var(--coral); font-size: 13px; margin-top: 10px; }
+
+.midi-loaded { display: flex; flex-direction: column; gap: 12px; }
+.midi-loaded-info { display: flex; align-items: center; gap: 12px; }
+.midi-loaded-icon { font-size: 28px; line-height: 1; }
+.midi-loaded-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.midi-loaded-meta  { font-size: 12.5px; color: var(--teal); margin-top: 2px; }
+.midi-loaded-actions { display: flex; gap: 10px; align-items: center; }
+.midi-loaded-actions .btn.cta { font-size: 15px; padding: 12px 24px; margin-top: 0; }
+#btn-midi-reset { padding: 10px 14px; border-radius: 10px; font-size: 15px; }
 
 /* ---------- AI Coach ---------- */
 .coach-section { margin-top: 22px; border-top: 1px solid var(--border); padding-top: 20px; }
