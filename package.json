@@ -1,0 +1,19 @@
+{
+  "name": "jazz-keys",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test server/test/*.test.js",
+    "check": "node --check js/app.js && node --check js/game.js && node --check js/score-import.js && node --check server/index.js"
+  },
+  "dependencies": {
+    "express": "5.1.0",
+    "fast-xml-parser": "5.9.3",
+    "multer": "2.2.0",
+    "unzipper": "0.12.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

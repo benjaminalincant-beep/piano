@@ -82,11 +82,22 @@ export class Game {
     this._coachKey = null;
     level.events.forEach((ev, i) => {
       const c = ev.chord;
-      const root = Array.isArray(c) ? c[0] : c.root;
-      const quality = Array.isArray(c) ? c[1] : c.quality;
-      const octave = (Array.isArray(c) ? c[2] : c.octave) ?? 4;
-      const midis = buildChord(root, quality, octave);
-      const name = chordSymbol(root, quality);
+      let midis;
+      let name;
+      if (Array.isArray(ev.midis) && ev.midis.length) {
+        midis = [...new Set(ev.midis)]
+          .map(Number)
+          .filter((midi) => Number.isInteger(midi) && midi >= 0 && midi <= 127)
+          .sort((a, b) => a - b);
+        name = ev.label || midis.map((midi) => NOTE_LETTERS[midi % 12]).join(" ");
+      } else {
+        const root = Array.isArray(c) ? c[0] : c.root;
+        const quality = Array.isArray(c) ? c[1] : c.quality;
+        const octave = (Array.isArray(c) ? c[2] : c.octave) ?? 4;
+        midis = buildChord(root, quality, octave);
+        name = chordSymbol(root, quality);
+      }
+      if (!midis.length) return;
       const target = COUNT_IN + this.lookahead + ev.beat * beatMs;
       const refs = [];
       for (const midi of midis) {
