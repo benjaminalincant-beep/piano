@@ -445,13 +445,23 @@ function setupMidiDrop() {
     if (file) handleFile(file);
   });
 
+  // Tempo selector
+  let _tempoMult = 1;
+  $("#tempo-btns").addEventListener("click", (e) => {
+    const btn = e.target.closest(".tempo-btn");
+    if (!btn) return;
+    _tempoMult = parseFloat(btn.dataset.mult);
+    $("#tempo-btns").querySelectorAll(".tempo-btn").forEach(b => b.classList.toggle("active", b === btn));
+    if (_importedLevel) metaEl.textContent = `${_importedLevel._chordCount} accords · ${Math.round(_importedLevel.bpm * _tempoMult)} bpm · ${_importedLevel.lives} vies`;
+  });
+
   // Play button
   $("#btn-play-midi").addEventListener("click", () => {
     if (!_importedLevel) return;
     currentMode  = "midi";
     currentId    = _importedLevel.id;
-    currentLevel = _importedLevel;
-    launch(`🎵 ${_importedLevel.title}`);
+    currentLevel = { ..._importedLevel, bpm: _importedLevel.bpm * _tempoMult };
+    launch(`🎵 ${_importedLevel.title}${_tempoMult !== 1 ? " ×" + _tempoMult : ""}`);
   });
 
   // Reset button
