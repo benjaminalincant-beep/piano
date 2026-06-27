@@ -9,6 +9,7 @@ COPY --from=nodebase /usr/local/ /usr/local/
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl poppler-utils \
+  && mkdir -p /usr/share/applications /usr/share/desktop-directories \
   && curl -fsSL -o /tmp/audiveris.deb \
     "https://github.com/Audiveris/audiveris/releases/download/${AUDIVERIS_VERSION}/${AUDIVERIS_PACKAGE}" \
   && apt-get install -y --no-install-recommends /tmp/audiveris.deb \
