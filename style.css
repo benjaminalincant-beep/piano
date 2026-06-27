@@ -34,6 +34,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -176,6 +177,23 @@ kbd { font-family: var(--font); background: var(--surface-2); border: 1px solid 
   border-radius: var(--r-sm); color: #ffb5aa; background: rgba(239, 111, 94, 0.09);
   font-size: 13px; line-height: 1.5;
 }
+.import-review {
+  padding: 16px; border: 1px solid rgba(52, 216, 180, 0.28);
+  border-radius: var(--r-lg); background: rgba(52, 216, 180, 0.06);
+}
+.review-score { display: flex; align-items: center; gap: 13px; }
+#review-confidence {
+  display: grid; place-items: center; width: 58px; height: 58px; flex: none;
+  border-radius: 50%; border: 2px solid var(--teal); color: var(--teal);
+  font: 700 15px var(--font-display);
+}
+.review-score p { margin-top: 3px; color: var(--text-dim); font-size: 13px; }
+.review-warnings { list-style: none; margin: 14px 0; display: grid; gap: 7px; }
+.review-warnings li { position: relative; padding-left: 20px; color: var(--text-dim); font-size: 13px; line-height: 1.45; }
+.review-warnings li::before { content: "•"; position: absolute; left: 4px; color: var(--gold); }
+.review-warnings li[data-severity="error"]::before { color: var(--coral); }
+.review-warnings li[data-severity="ok"]::before { color: var(--teal); }
+.review-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .midi-strip {
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
   margin-top: 14px; padding: 12px 4px;

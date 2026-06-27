@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=2" />
 </head>
 <body>
   <div class="aurora" aria-hidden="true">
@@ -64,6 +64,18 @@
               <strong id="import-percent">0%</strong>
             </div>
             <div class="progress"><div id="import-progress-fill" class="progress-fill"></div></div>
+          </div>
+
+          <div id="import-review" class="import-review" hidden>
+            <div class="review-score">
+              <span id="review-confidence">—</span>
+              <div><strong>Analyse terminée</strong><p id="review-summary"></p></div>
+            </div>
+            <ul id="review-warnings" class="review-warnings"></ul>
+            <div class="review-actions">
+              <button id="btn-play-import" class="btn primary" type="button">Jouer en mode Survie</button>
+              <a id="btn-download-midi" class="btn ghost compact" download>Télécharger le MIDI</a>
+            </div>
           </div>
 
           <p id="import-error" class="import-error" role="alert" hidden></p>
@@ -205,6 +217,18 @@
     </section>
 
   </main>
-  <script type="module" src="js/app.js"></script>
+  <script type="module">
+    import("./js/app.js?v=2").catch((error) => {
+      console.error("Jazz Keys failed to start", error);
+      document.documentElement.dataset.appError = error?.message || "unknown";
+      const home = document.getElementById("screen-home");
+      const message = document.getElementById("import-error");
+      if (home) home.classList.add("active");
+      if (message) {
+        message.hidden = false;
+        message.textContent = "L’application n’a pas pu démarrer. Recharge la page ou réessaie dans un instant.";
+      }
+    });
+  </script>
 </body>
 </html>

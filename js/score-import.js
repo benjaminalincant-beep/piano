@@ -10,8 +10,19 @@ function assertPdf(file) {
 function normalizeEvent(event, index) {
   const beat = Number(event.beat);
   const chord = event.chord;
-  if (!Number.isFinite(beat) || !chord) {
+  const midis = Array.isArray(event.midis)
+    ? [...new Set(event.midis.map(Number).filter((midi) => Number.isInteger(midi) && midi >= 0 && midi <= 127))]
+    : [];
+  if (!Number.isFinite(beat) || (!chord && !midis.length)) {
     throw new Error(`Note invalide à la position ${index + 1}.`);
+  }
+  if (midis.length) {
+    return {
+      beat,
+      duration: Math.max(0.125, Number(event.duration) || 1),
+      midis,
+      label: event.label ? String(event.label) : undefined,
+    };
   }
   if (Array.isArray(chord)) return { beat, chord };
   if (!chord.root || !chord.quality) {
@@ -83,7 +94,13 @@ export class ScoreImporter {
     const payload = await response.json();
     const level = normalizeLevel(payload, file.name);
     onProgress({ percent: 100, message: `${level.events.length} événements prêts.` });
-    return level;
+    return {
+      level,
+      report: payload.report || { confidence: 0, needsReview: true, warnings: [] },
+      midi: payload.midi || null,
+      midiMimeType: payload.midiMimeType || "audio/midi",
+      requestId: payload.requestId || null,
+    };
   }
 }
 

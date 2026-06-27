@@ -1,0 +1,6 @@
+.git
+work
+node_modules
+npm-debug.log
+*.omr
+*.mxl

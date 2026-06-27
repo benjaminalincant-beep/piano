@@ -17,6 +17,8 @@ let currentMode = "lesson";   // "lesson" | "song" | "import"
 let currentId = null;
 let currentLevel = null;
 let selectedScore = null;
+let convertedImport = null;
+let midiObjectUrl = null;
 const scoreImporter = new ScoreImporter();
 
 const ORDER = [];
@@ -160,6 +162,7 @@ const scoreFile = $("#score-file");
 const scoreDropzone = $("#score-dropzone");
 const importFile = $("#import-file");
 const importProgress = $("#import-progress");
+const importReview = $("#import-review");
 const importError = $("#import-error");
 const convertButton = $("#btn-convert");
 
@@ -174,11 +177,15 @@ function setImportError(message = "") {
 }
 
 function resetImport() {
+  if (midiObjectUrl) URL.revokeObjectURL(midiObjectUrl);
+  midiObjectUrl = null;
+  convertedImport = null;
   selectedScore = null;
   scoreFile.value = "";
   importFile.hidden = true;
   scoreDropzone.hidden = false;
   importProgress.hidden = true;
+  importReview.hidden = true;
   convertButton.disabled = true;
   convertButton.textContent = "Transformer et jouer";
   setImportError();
@@ -193,6 +200,7 @@ function selectScore(file) {
     scoreDropzone.hidden = true;
     importFile.hidden = false;
     importProgress.hidden = true;
+    importReview.hidden = true;
     convertButton.disabled = false;
     setImportError();
   } catch (error) {
@@ -223,6 +231,41 @@ for (const eventName of ["dragleave", "drop"]) {
 }
 scoreDropzone.addEventListener("drop", (event) => selectScore(event.dataTransfer.files[0]));
 
+function launchImportedLevel() {
+  if (!convertedImport) return;
+  currentMode = "import";
+  currentId = `import:${selectedScore.name}`;
+  currentLevel = convertedImport.level;
+  launch(`Survie · ${currentLevel.name}`);
+}
+
+function showImportReview(result) {
+  convertedImport = result;
+  const confidence = Math.round((Number(result.report.confidence) || 0) * 100);
+  $("#review-confidence").textContent = `${confidence}%`;
+  $("#review-summary").textContent = result.report.needsReview
+    ? "Vérifie les alertes avant de jouer."
+    : `${result.level.events.length} groupes de notes prêts à jouer.`;
+  const warnings = Array.isArray(result.report.warnings) ? result.report.warnings : [];
+  $("#review-warnings").innerHTML = warnings.length
+    ? warnings.map((warning) => `<li data-severity="${warning.severity || "warning"}">${warning.message}</li>`).join("")
+    : "<li data-severity=\"ok\">Rythme, hauteurs et structure cohérents.</li>";
+
+  const download = $("#btn-download-midi");
+  if (result.midi) {
+    const bytes = Uint8Array.from(atob(result.midi), (character) => character.charCodeAt(0));
+    midiObjectUrl = URL.createObjectURL(new Blob([bytes], { type: result.midiMimeType }));
+    download.href = midiObjectUrl;
+    download.download = `${result.level.name.replace(/[^\p{L}\p{N}._-]+/gu, "-")}.mid`;
+    download.hidden = false;
+  } else {
+    download.hidden = true;
+  }
+  importReview.hidden = false;
+}
+
+$("#btn-play-import").addEventListener("click", launchImportedLevel);
+
 convertButton.addEventListener("click", async () => {
   if (!selectedScore) return;
   convertButton.disabled = true;
@@ -230,15 +273,14 @@ convertButton.addEventListener("click", async () => {
   importProgress.hidden = false;
   setImportError();
   try {
-    const level = await scoreImporter.convert(selectedScore, ({ percent, message }) => {
+    const result = await scoreImporter.convert(selectedScore, ({ percent, message }) => {
       $("#import-status").textContent = message;
       $("#import-percent").textContent = `${percent}%`;
       $("#import-progress-fill").style.width = `${percent}%`;
     });
-    currentMode = "import";
-    currentId = `import:${selectedScore.name}`;
-    currentLevel = level;
-    launch(`Survie · ${level.name}`);
+    importProgress.hidden = true;
+    showImportReview(result);
+    if (!result.report.needsReview) launchImportedLevel();
   } catch (error) {
     importProgress.hidden = true;
     importFile.hidden = false;
@@ -424,10 +466,10 @@ $("#btn-retry").addEventListener("click", retry);
 
 // ---- boot ------------------------------------------------------------------
 if (!input.supported) {
-  $("#midi-status").textContent = "Web MIDI not available — the computer keyboard works great.";
+  $("#midi-status").textContent = "Web MIDI indisponible — le clavier de l’ordinateur reste utilisable.";
   $("#status-dot").dataset.state = "unsupported";
 } else {
-  $("#midi-status").textContent = "Connect your MIDI piano, or just play with the keyboard.";
+  $("#midi-status").textContent = "Connecte ton piano MIDI, ou joue avec le clavier.";
   $("#status-dot").dataset.state = "idle";
 }
 
@@ -438,7 +480,7 @@ input.addEventListener("note", (e) => {
   if (e.detail.type === "on" && synth.resume) synth.resume();
   if (!heardMidi && e.detail.source === "midi" && e.detail.type === "on") {
     heardMidi = true;
-    $("#midi-status").textContent = "✓ I can hear your piano — you're all set!";
+    $("#midi-status").textContent = "✓ Piano détecté — tout est prêt.";
     $("#status-dot").dataset.state = "connected";
   }
 });
