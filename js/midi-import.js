@@ -1,6 +1,7 @@
-// MIDI file importer — parses a .mid file dropped by the user and converts it
-// into the game's level format so it can be played in Survival mode.
-// Uses @tonejs/midi from esm.sh (no install needed).
+// MIDI file importer + Sheet Music OMR (via Claude Vision).
+//
+// parseMidiFile(file)        — parse a .mid binary
+// parseSheetMusic(file, key) — send a PDF/image to Claude Vision, get notes back
 
 const TONEJS_MIDI = "https://esm.sh/@tonejs/midi";
 const NOTE_NAMES  = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
@@ -91,4 +92,121 @@ export async function parseMidiFile(file) {
     _noteCount: allNotes.length,
     _chordCount: events.length,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Sheet music OMR via Claude Vision
+// Accepts PDF, PNG, JPG, WEBP — returns the same level shape as parseMidiFile.
+// ---------------------------------------------------------------------------
+
+const CLAUDE_API  = "https://api.anthropic.com/v1/messages";
+const CLAUDE_MODEL= "claude-opus-4-8";  // best vision model for sheet music
+
+const OMR_PROMPT = `Tu es un expert en lecture de partitions musicales.
+Analyse cette partition et extrait toutes les notes dans l'ordre de lecture.
+
+Réponds UNIQUEMENT avec un objet JSON valide (pas de markdown, pas de texte autour), avec cette structure exacte :
+{
+  "title": "<titre du morceau si visible, sinon 'Partition'>",
+  "bpm": <tempo en BPM, 120 si non indiqué>,
+  "events": [
+    { "beat": <position en temps, commencer à 0, incrémenter par durée>, "midis": [<numéros MIDI>], "name": "<nom accord/note>" },
+    ...
+  ]
+}
+
+Règles :
+- Les numéros MIDI : C4=60, D4=62, E4=64, F4=65, G4=67, A4=69, B4=71. Octave suivante +12.
+- "beat" est la position temporelle cumulée. Une noire = 1 beat, blanche = 2, croche = 0.5, ronde = 4.
+- Pour un accord, mets toutes les notes simultanées dans le même "midis".
+- Pour une mélodie, chaque note est un event séparé.
+- Inclus la main droite ET la main gauche si présentes.
+- Maximum 200 events (prends les premiers si la partition est longue).`;
+
+export async function parseSheetMusic(file, apiKey) {
+  const mediaType = file.type || guessMediaType(file.name);
+  if (!mediaType) throw new Error("Format non supporté. Utilise PDF, PNG ou JPG.");
+
+  // Read file as base64
+  const base64 = await fileToBase64(file);
+
+  // Build message content — PDF uses "document" type, images use "image"
+  const isPdf = mediaType === "application/pdf";
+  const contentBlock = isPdf
+    ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } }
+    : { type: "image",    source: { type: "base64", media_type: mediaType, data: base64 } };
+
+  const res = await fetch(CLAUDE_API, {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: 4096,
+      messages: [{
+        role: "user",
+        content: [contentBlock, { type: "text", text: OMR_PROMPT }],
+      }],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Erreur API ${res.status}`);
+  }
+
+  const data = await res.json();
+  const raw  = data.content?.[0]?.text ?? "";
+
+  // Extract JSON from the response (Claude sometimes adds a tiny preamble)
+  const jsonStr = raw.match(/\{[\s\S]*\}/)?.[0];
+  if (!jsonStr) throw new Error("Claude n'a pas retourné de JSON valide.");
+
+  let parsed;
+  try { parsed = JSON.parse(jsonStr); }
+  catch (e) { throw new Error("Impossible de lire la réponse de Claude : " + e.message); }
+
+  if (!parsed.events?.length) throw new Error("Aucune note extraite de la partition.");
+
+  // Ensure midis arrays and normalise beats
+  const events = parsed.events.map(ev => ({
+    beat : Number(ev.beat) || 0,
+    midis: (ev.midis || []).map(Number).filter(m => m >= 21 && m <= 108),
+    name : ev.name || (ev.midis || []).map(m => NOTE_NAMES[m % 12]).join("·"),
+  })).filter(ev => ev.midis.length > 0);
+
+  if (!events.length) throw new Error("Aucune note MIDI valide trouvée.");
+
+  const avgChord = events.reduce((s, e) => s + e.midis.length, 0) / events.length;
+
+  return {
+    id         : `omr-${Date.now()}`,
+    title      : parsed.title || file.name.replace(/\.[^.]+$/, ""),
+    bpm        : Number(parsed.bpm) || 120,
+    lives      : avgChord > 3 ? 8 : 5,
+    lookahead  : 4200,
+    events,
+    _isMidi    : true,
+    _chordCount: events.length,
+    _noteCount : events.reduce((s, e) => s + e.midis.length, 0),
+    _omr       : true,
+  };
+}
+
+function guessMediaType(name) {
+  const ext = name.split(".").pop().toLowerCase();
+  return { pdf: "application/pdf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp" }[ext] || null;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }

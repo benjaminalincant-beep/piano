@@ -8,7 +8,7 @@ import { MiniKeyboard } from "./keyboard.js";
 import { UNITS, LESSONS, LEVELS } from "./course.js";
 import { SONGS, TIER_NAMES } from "./songs.js";
 import { chord as buildChord } from "./music.js";
-import { parseMidiFile } from "./midi-import.js";
+import { parseMidiFile, parseSheetMusic } from "./midi-import.js";
 
 const input = new MidiInput();
 const synth = new Synth();
@@ -403,23 +403,42 @@ function setupMidiDrop() {
   const errorEl   = $("#midi-drop-error");
 
   async function handleFile(file) {
-    if (!file || !/\.(mid|midi)$/i.test(file.name)) {
-      showError("Glisse un fichier .mid ou .midi");
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    const isMidi  = /\.(mid|midi)$/.test(name);
+    const isSheet = /\.(pdf|png|jpg|jpeg|webp)$/.test(name);
+
+    if (!isMidi && !isSheet) {
+      showError("Format non supporté — glisse un .mid, .pdf, .png ou .jpg");
       return;
     }
+
     errorEl.hidden = true;
-    titleEl.textContent = "Chargement…";
-    metaEl.textContent  = "";
-    idleEl.hidden  = true;
+    titleEl.textContent = isSheet ? "Analyse de la partition par IA…" : "Chargement…";
+    metaEl.textContent  = isSheet ? "Claude Vision lit les notes, ça prend ~10 secondes" : "";
+    idleEl.hidden   = true;
     loadedEl.hidden = false;
+
     try {
-      _importedLevel = await parseMidiFile(file);
+      if (isMidi) {
+        _importedLevel = await parseMidiFile(file);
+      } else {
+        // Sheet music — need Anthropic API key
+        let apiKey = localStorage.getItem("jazzkeys.anthropic_key");
+        if (!apiKey) {
+          apiKey = prompt("Clé API Anthropic pour lire la partition (stockée localement) :");
+          if (!apiKey) { idleEl.hidden = false; loadedEl.hidden = true; return; }
+          localStorage.setItem("jazzkeys.anthropic_key", apiKey.trim());
+        }
+        _importedLevel = await parseSheetMusic(file, apiKey);
+      }
       titleEl.textContent = _importedLevel.title;
-      metaEl.textContent  = `${_importedLevel._chordCount} accords · ${Math.round(_importedLevel.bpm)} bpm · ${_importedLevel.lives} vies`;
+      metaEl.textContent  = `${_importedLevel._chordCount} accords · ${Math.round(_importedLevel.bpm)} bpm · ${_importedLevel.lives} vies${_importedLevel._omr ? " · IA" : ""}`;
     } catch (e) {
-      idleEl.hidden  = false;
+      idleEl.hidden   = false;
       loadedEl.hidden = true;
-      showError("Impossible de lire ce fichier : " + e.message);
+      if (e.message.includes("401")) localStorage.removeItem("jazzkeys.anthropic_key");
+      showError("Erreur : " + e.message);
     }
   }
 
